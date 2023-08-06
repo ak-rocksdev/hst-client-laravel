@@ -21,6 +21,14 @@ use App\Http\Controllers\ApiController;
 // });
 
 Route::middleware(['auth'])->group(function() {
-    Route::get('/confirm-event-on-register',    [ApiController::class, 'doConfirmCompetitionOnRegister']);
-    Route::post('/register-event',              [ApiController::class, 'registerContestantByCompetitionId']);
+    Route::prefix('/event')->group(function () {
+        Route::get('/confirmation',             [ApiController::class, 'doConfirmCompetitionOnRegister']);
+        Route::post('/register',                [ApiController::class, 'registerContestantByCompetitionId']);
+        Route::get('/check-status-by-user',     [ApiController::class, 'getEventStatusByUserId']);
+    });
+});
+
+Route::prefix('/event')->group(function () {
+    Route::get('/registered-contestant',    [ApiController::class, 'getRegisteredContestantByCompetitionId']);
+    Route::get('/result',                   [ApiController::class, 'getResultByCompetitionId']);
 });

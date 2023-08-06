@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Competition;
 use App\Models\Sport;
+use App\Models\Contestant;
+use App\Models\Games;
+use App\Models\Score;
+use App\Models\CompetitionType;
+
+use Illuminate\Support\Facades\DB;
 
 use Auth;
 
@@ -39,7 +45,27 @@ class PageController extends Controller
             ->select('sport.*')
             ->get();
 
-        return view('pages.event', compact('event', 'competitions', 'sports'));
+        $contestants = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+                        ->leftJoin('user', 'contestant_list.ID_user', 'user.ID_user')
+                        ->leftJoin('user_origin', 'user.ID_user', 'user_origin.user_id')
+                        ->leftJoin('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+                        ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                        ->where('competition_list.ID_event', $id)
+                        ->select('contestant_list.*',
+                            'competition_list.level as competition_name',
+                            'sport.name as sport_name',
+                            'event_list.name as event_name',
+                            'user.full_name', 
+                            'user_origin.indo_province_name',
+                            'user_origin.indo_city_name',
+                            'user_origin.state_name',
+                            'user_origin.country_name',
+                        )
+                        ->orderByDesc('sport.name')
+                        ->orderByDesc('contestant_list.created_at')
+                        ->get();
+        
+        return view('pages.event', compact('event', 'competitions', 'sports', 'contestants'));
     }
 
     public function viewUserLoginPage(Request $request){
@@ -75,6 +101,10 @@ class PageController extends Controller
         return view('pages.update-password', compact('findUserByEmail'));
     }
 }
+
+
+
+
 
 // $competitionId = $RowSQL['ID_competition'];
 
@@ -201,3 +231,67 @@ class PageController extends Controller
 //             ->leftJoin(\DB::raw('(SELECT @types:=NULL, @rn:=NULL) vars'), \DB::raw('1'), '=', \DB::raw('1'));
 //     }, 'bb')
 //     ->get();
+
+
+
+
+
+// $ID_games = [];
+//         $ID_competition = $competitions[0]->ID_competition;
+            
+//         // Retrieve the games with their corresponding competition types
+//         $games = Games::select('games.*', 'competition_type.code')
+//                 ->join('competition_type', 'games.ID_type', '=', 'competition_type.ID_type')
+//                 ->whereIn('games.ID_games', function ($query) use ($ID_competition) {
+//                     $query->select('ID_games')
+//                         ->from('score_list')
+//                         ->whereIn('ID_games', function ($query) use ($ID_competition) {
+//                             $query->select('ID_games')
+//                                 ->from('games')
+//                                 ->where('ID_competition', $ID_competition);
+//                         });
+//                 })
+//                 ->orderBy('competition_type.ID_type')
+//                 ->get();
+        
+
+//         $competitionName = 'Final'; // Change this to the specific competition name you want
+
+//         $contestantsList = Contestant::selectRaw('SUM(score) as score, GROUP_CONCAT(score) as aa, contestant_list.ID_contestant, MAX(full_name) as full_name')
+//         ->join(DB::raw('(SELECT ID_contestant, score, ID_judge, 
+//             @rn:=CASE WHEN @ID_contestant = ID_contestant THEN @rn + 1 ELSE 1 END AS rn,
+//             @ID_contestant:=ID_contestant
+//             FROM (SELECT @ID_contestant:=NULL, @rn:=NULL) vars, 
+//             (SELECT * FROM score_list
+//             WHERE ID_contestant IN (SELECT ID_contestant FROM score_list) 
+//             AND ID_judge = 0 
+//             AND ID_games IN (SELECT ID_games FROM games 
+//                 WHERE ID_type IN (SELECT ID_type FROM competition_type WHERE name = ?) 
+//                 AND ID_competition = ?)
+//             ORDER BY ID_contestant, score DESC) a) sub_table'), 
+//             function($join) {
+//                 $join->on('contestant_list.ID_contestant', '=', 'sub_table.ID_contestant');
+//             })
+//         ->leftJoin('contestant_list as c', 'c.ID_contestant', '=', 'sub_table.ID_contestant')
+//         ->leftJoin('user as d', 'c.ID_user', '=', 'd.ID_user')
+//         ->leftJoin('competition_list as e', 'c.ID_competition', '=', 'e.ID_competition')
+//         ->whereRaw('rn <= e.final')
+//         ->where('c.attendance', 1)
+//         ->orderBy('sub_table.ID_contestant')
+//         ->orderByDesc('sub_table.score')
+//         ->groupBy('contestant_list.ID_contestant')
+//         ->orderByDesc('score')
+//         ->limit(10)
+//         ->get();
+
+//         $ID_games = Games::whereIn('ID_games', function ($query) use ($ID_competition) {
+//             $query->select('ID_games')
+//                 ->from('score_list')
+//                 ->whereIn('ID_games', function ($subquery) use ($ID_competition) {
+//                     $subquery->select('ID_games')
+//                         ->from('games')
+//                         ->where('ID_competition', $competitions[0]->ID_competition); // Make sure $RowSQL is defined
+//                 });
+//         })->pluck('ID_games')->toArray();
+
+//         $point = [25, 20, 16, 13, 11, 10, 9, 8, 7, 6];

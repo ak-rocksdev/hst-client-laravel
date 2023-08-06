@@ -33,10 +33,21 @@ return [
     'event_name' => 'Nama Event',
     'selected_category' => 'Pilihan Kategori',
     'close' => 'Tutup',
+    'registered_contestant' => 'Peserta Terdaftar',
+    'name' => 'Nama',
+    'origin' => 'Asal',
+    'category' => 'Kategori',
+    'contest_result' => 'Hasil Pertandingan',
 
     // response
     'response_password_updated' => 'Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.',
     'response_login_failed' => 'Login gagal! Silakan cek Email dan Password Anda.',
     'response_email_not_available' => 'Email yang anda tulis belum terdaftar, Cek penulisannya!',
-    'response_event_date_invalid' => 'Event yang dipilih tidak tersedia untuk pendaftaran. Atau telah lewat dari waktu pendaftaran.'
+    'response_event_date_invalid' => 'Event yang dipilih tidak tersedia untuk pendaftaran. Atau telah lewat dari waktu pendaftaran.',
+    'response_event_already_registered' => 'Anda sudah terdaftar untuk event ini.',
+    'response_competition_already_registered' => 'Anda sudah terdaftar untuk kompetisi ini.',
+    'response_max_join_competition' => 'Maksimal kompetisi yang dapat anda ikuti di event ini adalah :number1. Pilih kurang dari :number2 kategori',
+    'response_register_event_success' => 'Anda telah berhasil mendaftar untuk event ini!',
+    'response_failed' => 'Gagal!',
+    'response_success' => 'Berhasil!',
 ];

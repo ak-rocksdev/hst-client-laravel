@@ -12,6 +12,20 @@
 
 @section('extracss')
 <style>
+    .btn-group {
+        border-radius: 0.375rem !important;
+    }
+
+    .table-container {
+        overflow-y: auto;
+        max-height: 300px;
+    }
+
+    .table-container thead {
+        position: sticky;
+        top: 0;
+    }
+
     .mbl-btn-ED {
         border-radius: 0 !important;
         margin-bottom: 15px;
@@ -77,7 +91,7 @@
 
 @section('body')
 <div class="jumbotron jumbotronImage" style="background-image: url();"> </div>
-<div class="hero-image-container mb-5">
+<div class="hero-image-container">
     <img class="project-main-image" src="{{ asset('assets/img/about-us-1.jpg') }}" alt="Event Poster">
     <div class="container hero-text-container">
         <div class="hero-text">
@@ -86,11 +100,11 @@
                 <i class="fas fa-map-marker-alt me-2"></i>
                 {{ $event->location }}
             </p>
-            <a href="#gallery" class="button button-grey">Detail<i class="fas fa-chevron-right ms-3"></i></a>
+            <a href="#detail" class="button button-grey">Detail<i class="fas fa-chevron-right ms-3"></i></a>
         </div>
     </div>
 </div>
-<div class="container">
+<div id="detail" class="container py-5">
     <div class="row mb-4">
         <div class="col-12 col-md-6">
             <div class="eventInfo e_container">
@@ -117,15 +131,10 @@
                 <div class="col-12">
                     <!-- <button class="btn btn-block text-center mbl-btn-ED paddingIn w-100" style="background-color:#1e2024">
                         <i class="fas fa-lock"></i> PRIVATE
-                    </button>
-                    <button class="btn btn-block text-center mbl-btn-ED paddingIn w-100" style="background-color:#1e2024">
-                        <i class="fas fa-check"></i> REGISTERED
                     </button> -->
                     <button id="registrationButton" class="btn btn-block fs-4 fw-bold text-center w-100 mbl-btn-ED paddingIn btn-yellow btnRegistration">
                         CONTESTANT REGISTRATION
                     </button>
-                    <!-- <button onclick="gotoLogin()" class="btn btn-block text-center mbl-btn-ED paddingIn btnRegistration w-100">CONTESTANT REGISTRATION Login</button> -->
-                    <!-- <button data-toggle="modal" data-target="#modalRegistrationTime" class="btn btn-block text-center mbl-btn-ED paddingIn btnRegistration">CONTESTANT REGISTRATION</button> -->
                 </div>
                 <div class="col-12">
                     <button class="btn btn-block text-center mbl-btn-ED paddingIn btnTnc btn-dark fs-4 fw-bold w-100" data-bs-toggle="modal" data-bs-target="#myModal2">READ TERMS AND CONDITIONS</button>
@@ -138,156 +147,130 @@
     </div>
 </div>
 <div class="container">
-    <div class="row no-gutters">
+    <div class="row mb-4">
         <div class="col-md-12">
-            <h2 class="titleThin">
-                Registered / Result
+            <h2 class="fw-bold text-uppercase">
+                {{ __('messages.registered_contestant') }}
             </h2>
         </div>
     </div>
-    <!--TAMPILAN CONTAINER RESULT-->
-    <div class="row">
-        <!-- <div class="col-12"> -->
-        <!-- <div style="overflow-x: auto;"> -->
-        <div class="col-sm-12" style="max-height: 300px; overflow-y: auto; margin-bottom: 25px">
-            <table id="myTable" class="table table-striped table-responsive table-borderless text-uppercase">
-                <tbody>
-                    <tr>
-                        <td><img class="img-responsive logoInsideTable" src="{{ asset('assets/img/logo_light.png') }}"></td>
-                        <td colspan="6">
-                            <div class="titleThin">Nama Event - Sport</div>
-                            <br>
-                            <div class="titleContent" style="font-size: 24px;margin-top: -1em;">CLASS : Mens Street</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="15%">NO.</td>
-                        <td width="45%">NAME</td>
-                        <td width="40%">ORIGIN</td>
-                    </tr>
-                    <tr>
-                        <td>1.</td>
-                        <td>Nama</td>
-                        <td>Provinsi, Kota <i style='color: red;'>(Update your Profile)</i></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-12 form-inline tableHeadTitle">
-                    <div class="logoContainer"> <img class="img-responsive logoInsideTable" src="{{ asset('assets/img/logo_light.png') }}"> </div>
-                    <div>
-                        <div class="titleThin">Skateboard</div>
-                        <div class="titleThin">Nama Event</div>
-                        <div class="titleContent" style="font-size: 15px;">CLASS : Women Street</div>
-                    </div>
-                </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <label for="competition" class="form-label me-3 text-white fw-bold text-uppercase">Filter</label>
+            <div id="filter-btn-group" class="btn-group btn-group-container" role="group" aria-label="Radio toggle button group">
+                @foreach ($competitions as $competition)
+                <input type="radio" class="btn-check" name="competition" id="competition-{{ $competition->ID_competition }}" autocomplete="off" value="{{ $competition->ID_competition }}" {{ $loop->first ? 'checked' : '' }}>
+                <label class="btn btn-white fw-bold" for="competition-{{ $competition->ID_competition }}">{{ $competition->sports }} - {{ $competition->level }}</label>
+                @endforeach
             </div>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="outerTableContainer">
-                    <div class="tableContainer columnWidth" style="width: 50%;">
-                        <table id="myTable" class="table table-striped table-responsive table-borderless text-uppercase">
-                            <tbody>
-                                <tr>
-                                    <th class="titleContent text-center">NO.</th>
-                                    <th class="titleContent text-center">Name</th>
-                                </tr>
-                                <tr>
-                                    <td class="titleContent numberIncrement text-center">1.</td>
-                                    <td class="titleContent nameList" st>Nama Player</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="tableContainer" style="width: 50%;">
-                        <!-- NOTE -->
-                        <div class="innerTableContainer">
-                            <table id="myTable" class="table table-striped table-responsive table-borderless text-uppercase tableOverflow">
-                                <div class="tableShadowLeft"></div>
-                                <tbody>
-                                    <tr>
-                                        <th class="titleContent text-center">Final</th>
-                                        <th class="titleContent text-center">Point</th>
-                                    </tr>
-                                    <tr>
-                                        <td class="titleContent text-center">0.00</td>
-                                        <td class="titleContent text-center point">25</td>
-                                    </tr>
-                                </tbody>
-                                <div class="tableShadowRight"></div>
-                            </table>
-                        </div>
-                    </div>
+    </div>
+    <!-- Tabel Registered Contestant -->
+    <div class="row mb-4">
+        <div class="col-sm-12">
+            <div class="table-header-gradient d-flex flex-row align-items-center p-3">
+                <img class="me-3" src="{{ asset('assets/img/logo_light.png') }}">
+                <div class="d-flex flex-column table-title-container">
+                    <div id="event-sport" class="fw-bold fs-3">{{ $contestants[0]->event_name }} - {{ $contestants[0]->sport_name }}</div>
+                    <div class="fw-normal">{{ __('messages.category') }} : <span id="competition-name" ></span></div>
                 </div>
+            </div>
+            <div class="table-container">
+                <table id="myTable" class="table table-dark table-striped table-borderless text-uppercase">
+                    <thead>
+                        <tr colspan="3">
+                            <th width="15%"><span class="fw-bold">NO.</span></th>
+                            <th width="45%"><span class="fw-bold">{{ __('messages.name') }}</span></th>
+                            <th width="40%"><span class="fw-bold">{{ __('messages.origin') }}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="contestant-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-5 pb-3">
+        <div class="col-md-12">
+            <h2 class="fw-bold text-uppercase">
+                {{ __('messages.contest_result') }}
+            </h2>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <label for="competition" class="form-label me-3 text-white fw-bold text-uppercase">Filter</label>
+            <div id="filter-result-btn-group" class="btn-group btn-group-container" role="group" aria-label="Radio toggle button group">
+                @foreach ($competitions as $competition)
+                <input type="radio" class="btn-check" name="result" id="result-{{ $competition->ID_competition }}" autocomplete="off" value="{{ $competition->ID_competition }}" {{ $loop->first ? 'checked' : '' }}>
+                <label class="btn btn-white fw-bold" for="result-{{ $competition->ID_competition }}">{{ $competition->sports }} - {{ $competition->level }}</label>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    <div class="row mb-5">
+        <div class="col-sm-12">
+            <div class="table-header-gradient d-flex flex-row align-items-center p-3">
+                <img class="me-3" src="{{ asset('assets/img/logo_light.png') }}">
+                <div class="d-flex flex-column table-title-container">
+                    <div id="result-event-sport" class="fw-bold fs-3"></div>
+                    <div class="fw-normal">{{ __('messages.category') }} : <span id="result-competition-name" ></span></div>
+                </div>
+            </div>
+            <div class="outerTableContainer table-responsive-wrapper">
+                <div>
+                    <table id="result-table" class="table table-dark table-striped table-responsive table-borderless text-uppercase">
+                        <thead id="result-table-head">
+                            <tr>
+
+                            </tr>
+                        </thead>
+                        <div class="tableShadowLeft"></div>
+                        <tbody id="result-table-body">
+                            <!-- <tr>
+                                <td class="titleContent numberIncrement text-center">1</td>
+                                <td class="titleContent nameList">Nama</td>
+                            </tr> -->
+                        </tbody>
+                        <div class="tableShadowRight"></div>
+                    </table>
+                </div>
+                
             </div>
         </div>
     </div>
     <!--END CONTAINER RESULT -->
 
-</div>
-
-<!-- <div id="registrationModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="agreement">
-                    <i class="fas fa-exclamation-triangle mb-dngr-R2" style="color: #bf1e2d;font-size: 60pt; text-align: center; display: block;"></i>
-                    <h2 class="titleThin mb-ttlMdl-R2 text-center" style="color: #000;">Baca dan perhatikan</h2>
-                    <h2 class="mb-ctnMdl-R2" style="color: #000 !important; display:inline-block; font-size: 150%;">
-                        Term and Condition
-                    </h2>
-                    <button type="button" class="btn center-block btn-block mb-btnCls-R2 mx-auto" data-bs-dismiss="modal" style="width: 50% !important;">Batal</button>
-                    <button id="setuju" type="button" class="btn center-block btn-block mb-btnCls-R2 mx-auto" style="width: 50% !important;">Setuju</button>
-                </div>
-
-                <div class="row chooseCategory" style="display:none;">
-                    <div class="col-md-12 mb-5">
-                        <span class="fas fa-exclamation-triangle mb-dngr-R2" style="color: #bf1e2d;font-size: 60pt; text-align: center; display: block;"></span>
-                        <h2 class="titleThin text-center" style="color: #000;">Pilih Kategori Pertandingan</h2>
-                    </div>
-                    <div class="col text-center">
-                        <button type="button" onClick="register_contest(1, 2)" class="btn btn-dark fs-5 fw-bold w-100 btn-level" data-bs-dismiss="modal">
-                            Skateboard - Mens Street
-                        </button>
-                    </div>
+    <div id="myModal2" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <!-- Modal content-->
+            <div class="modal-content ">
+                <div class="modal-body tncModal ">
+                    <!-- <h3 class="text-center text-black">Terms and Conditions</h3> -->
+                    {!! $event->tnc !!}
+                    <div class="btn btn-readmore" data-bs-dismiss="modal">CLOSE</div>
                 </div>
             </div>
         </div>
     </div>
-</div> -->
 
-<div id="myModal2" class="modal fade" role="dialog">
-    <div class="modal-dialog" role="document">
-        <!-- Modal content-->
-        <div class="modal-content ">
-            <div class="modal-body tncModal ">
-                <!-- <h3 class="text-center text-black">Terms and Conditions</h3> -->
-                {!! $event->tnc !!}
-                <div class="btn btn-readmore" data-bs-dismiss="modal">CLOSE</div>
+
+
+    <div id="modalRegistrationTime" class="modal fade" role="dialog">
+        <div class="modal-dialog" role="document">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body text-center tncModal">
+                    <h2>Registration open at</h2> 12 Juni - 14 Juni 2023
+                    <div class="btn btn-readmore" data-toggle="modal" data-target="#modalRegistrationTime">CLOSE</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
-
-<div id="modalRegistrationTime" class="modal fade" role="dialog">
-	<div class="modal-dialog" role="document">
-		<!-- Modal content-->
-		<div class="modal-content">
-			<div class="modal-body text-center tncModal">
-				<h2>Registration open at</h2> 12 Juni - 14 Juni 2023
-				<div class="btn btn-readmore" data-toggle="modal" data-target="#modalRegistrationTime">CLOSE</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-                                            <td class="titleContent text-center ">0.00</td>
+                                            <!-- <td class="titleContent text-center ">0.00</td>
                                             <td class="titleContent text-center point ">25</td>
                                         </tr>
                                     </tbody>
@@ -299,8 +282,7 @@
                 </div>
             </div>
         </div>
-        <!--END CONTAINER RESULT -->
-    </div>
+    </div> -->
 
     <div id="registrationModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -441,7 +423,7 @@
         
         // register_contest(idCompetition, player_name, event_name, category_name)
         // Hit Api Event, Competition, User and Get Info to show on SweetAlert
-        let action = '/api/confirm-event-on-register';
+        let action = '/api/event/confirmation';
         let method = 'GET';
         data = {
             userId: userId,
@@ -473,7 +455,7 @@
                     if(result.value) {
                         showLoading();
                         // Hit Api Register
-                        let action = '/api/register-event';
+                        let action = '/api/event/register';
                         let method = 'POST';
                         data = {
                             // add csrf
@@ -486,10 +468,9 @@
                             hideLoading();
                             if(response) {
                                 Swal.fire({
-                                    title: '<strong>Success!</strong>',
+                                    title: '<strong>{{ __("messages.response_success") }}</strong>',
                                     icon: 'success',
-                                    html: '<div class="titleContent" style="font-size: 24px;">' +
-                                        'You have successfully registered for the event</div>',
+                                    html: '<div>{{ __("messages.response_register_event_success") }}</div>',
                                     showCloseButton: true,
                                     showCancelButton: false,
                                     focusConfirm: false,
@@ -508,7 +489,7 @@
                                 messages += `<span class="fs-5 text-black"> ${response[field][0]} </span>`;
                             });
                             Swal.fire({
-                                title: '<strong>Failed!</strong>',
+                                title: '<strong>{{ __("messages.response_failed") }}</strong>',
                                 icon: 'error',
                                 html: '<div>' + messages + '</div>',
                                 showCloseButton: true,
@@ -531,93 +512,6 @@
         api(action, method, data, successCallback, errorCallback);
     })
 
-    function register_contest(idCompetition, player_name, event_name, category_name) {
-        Swal.fire({
-            title: '<strong>Check Your Data:</strong>',
-            icon: 'info',
-            html: '<div class="titleContent" style="font-size: 24px;">' +
-                'Contestant:</div>' + player_name + ' </br></br>' + 
-                '<div class="titleContent" style="font-size: 24px;">Event Name:</div>' + event_name + '</br></br>' + 
-                '<div class="titleContent" style="font-size: 24px;">Category: <span class="badge text-bg-success">' + category_name + '</span></div>',
-            showCloseButton: true,
-            showCancelButton: true,
-            focusConfirm: false,
-            confirmButtonText: '<i class="fas fa-thumbs-up"></i> Continue',
-            confirmButtonAriaLabel: 'Thumbs up, great!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if(result.value) {
-                $('.loading-container').css("display", "flex");
-                const idCompetition = $("input[name='competitionLevel[]']:checked").map(function () {
-                    return this.value;
-                }).get();
-                if(0) { // if Direct Register (perlu rumus)
-                    $(function() {
-                        $.ajax({
-                            url: "",
-                            type: "POST",
-                            dataType: "json",
-                            data: "ID_user=" + id_user + "&competition=" + idCompetition,
-                            success: function(res) {
-                                console.log(res)
-                                $('.loading-container').css(" display", "none");
-                                if(Number(res.status) === 1) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'You Are now Registered!',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    }).then(result => {
-                                        if(result.isConfirmed) {
-                                            window.location = "";
-                                        } else {
-                                            window.location = "";
-                                        }
-                                    });
-                                } else if(Number(res.status) === 3) {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Registrant is Reach the Maximum Limit!',
-                                        text: 'No more space for this category',
-                                    });
-                                } else if(Number(res.status) === 5) {
-                                    Swal.fire({
-                                        confirmButtonText: 'Edit Profile',
-                                        showCloseButton: true,
-                                        showCancelButton: true,
-                                        icon: 'error',
-                                        title: 'Complete Your Profile!',
-                                        text: 'Profil Anda Belum Lengkap, Harap lengkapi sebelum melanjutkan!',
-                                    }).then((result) => {
-                                        if(result.value) {
-                                            window.location.href = `kontestan/editprofile`
-                                        }
-                                    });
-                                } else if(Number(res.status) === 4) {
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'You Are on This Event!',
-                                        text: 'User already registered',
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Failed!',
-                                        text: 'Registration Failed, Contact Administrator',
-                                    });
-                                }
-                            },
-                            complete: function(response) {
-                                console.log(response)
-                            }
-                        })
-                    })
-                } else {
-                    window.location = "";
-                }
-            }
-        })
-    }
     var screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if(screenWidth <= 991 && screenWidth >= 769) {
         shortenTextTab();
@@ -646,12 +540,55 @@
     let signedIn = {{ Auth::check() ? 'true' : 'false' }};
 
     document.getElementById("registrationButton").addEventListener("click", function () {
-        if (signedIn) {
-            openRegistrationModal();
-        } else {
+        if (!signedIn) {
             gotoLogin();
+            return;
+        } else {
+            checkRegistrationStatus();
         }
     });
+
+    function checkRegistrationStatus() {
+        showLoading();
+        let action = '/api/event/check-status-by-user';
+        let method = 'GET';
+        data = {
+            ID_event: {{ $event->ID_event }},
+        };
+        successCallback = function(response) {
+            hideLoading();
+            if(response) {
+                let data = response.data;
+                // Assuming the API response contains 'data' and 'remainingSlots' properties
+                if (data.user_count == null) {
+                    // User is not registered, proceed with registration
+                    openRegistrationModal();
+                } else if (data.remaining_slots > 0) {
+                    // User is registered but has more slots available, proceed with registration
+                    openRegistrationModal();
+                } else {
+                    // User is registered and has reached the maximum number of registrations
+                    Swal.fire({
+                        title: '<strong>{{ __("messages.response_failed") }}</strong>',
+                        icon: 'warning',
+                        html: '<div>{{ __("messages.response_event_already_registered") }}</div>',
+                        showCloseButton: true,
+                        showCancelButton: false,
+                        focusConfirm: false,
+                        confirmButtonText: '<i class="fas fa-times me-2"></i> {{ __("messages.close") }}',
+                        confirmButtonAriaLabel: 'Thumbs up, great!',
+                    }).then((result) => {
+                        $('.modal').modal('hide');
+                    })
+                }
+            }
+        };
+        errorCallback = function (xhr) {
+            hideLoading();
+            console.log('error', xhr.responseJSON)
+        };
+        api(action, method, data, successCallback, errorCallback);
+    }
 </script>
 
 <script type="text/javascript ">
@@ -671,5 +608,207 @@
             $('#backToAgreement').click();
         })
     });
+</script>
+
+<script>
+    showLoading();
+    $(document).ready(function() {
+        // Function to populate the table with contestant data
+        function populateTable(contestants, competition) {
+            var tableBody = $('#contestant-table-body');
+            tableBody.empty(); // Clear existing table rows
+
+            updateEventAndCompetitionName(competition);
+            $.each(contestants, function(key, contestant) {
+                var row = $('<tr>');
+                row.append('<td>' + (key + 1) + '.</td>');
+                row.append('<td>' + contestant.full_name + '</td>');
+                var origin = '';
+                if (contestant.indo_province_name) {
+                    origin += contestant.indo_province_name + ', ';
+                }
+                if (contestant.indo_city_name) {
+                    origin += contestant.indo_city_name + ', ';
+                }
+                if (contestant.state_name) {
+                    origin += contestant.state_name + ', ';
+                }
+                origin += contestant.country_name ? contestant.country_name : '(Update your Profile)';
+                row.append('<td>' + origin + '</td>');
+                tableBody.append(row);
+                hideLoading();
+            });
+        }
+
+        function updateEventAndCompetitionName(competition) {
+            $('#event-sport').text(competition.event_name + ' - ' + competition.sport_name);
+            $('#competition-name').text(competition.level);
+        }
+
+        // Function to load the table data based on the selected competition
+        function loadTableData(competitionId) {
+            $.ajax({
+                url: '/api/event/registered-contestant', // Replace with your API endpoint URL
+                method: 'GET',
+                data: { 
+                    ID_competition: competitionId,
+                    ID_event: {{ $event->ID_event }},
+                }, // Pass the selected competition ID as a parameter
+                success: function(response) {
+                    var contestants = response.data.contestants;
+                    var competition = response.data.competition;
+                    populateTable(contestants, competition);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Add event listener to the filter button group
+        $('#filter-btn-group input[type="radio"]').on('change', function() {
+            showLoading();
+            var selectedCompetitionId = $(this).val();
+            loadTableData(selectedCompetitionId);
+        });
+
+        // Load table data with the default selected competition
+        var defaultCompetitionId = $('#filter-btn-group input[type="radio"]:checked').val();
+        loadTableData(defaultCompetitionId);
+    });
+</script>
+
+<script>
+    $('#filter-result-btn-group input[type="radio"]').on('change', function() {
+        showLoading();
+        console.log('test')
+        var selectedCompetitionId = $(this).val();
+        loadResult(selectedCompetitionId); // New function for loading "Finals" section data
+    });
+
+    function loadResult(competitionId) {
+        $.ajax({
+            url: '/api/event/result', // Replace with your API endpoint URL for loading "Finals" section data
+            method: 'GET',
+            data: {
+                ID_competition: competitionId,
+            }, // Pass the selected competition ID as a parameter
+            success: function(response) {
+                hideLoading();
+                // Assuming your API returns the "Finals" section data in response.data.finalsData
+                var finalsData = response.data;
+                populateResultTable(finalsData);
+            },
+            error: function(xhr, status, error) {
+                hideLoading();
+                console.log(error);
+            }
+        });
+    }
+
+    function fillScoreWithZero(scores, maxGames) {
+        var filledScores = scores.split(',');
+        while (filledScores.length < maxGames) {
+            filledScores.push('0.00');
+        }
+        return filledScores;
+    }
+
+    function populateResultTable(response) {
+        //head table
+        var tableHead = $('#result-table-head');
+        var tableBody = $('#result-table-body');
+        tableHead.empty();
+        tableBody.empty();
+
+        // Append the table header
+        var headerRow = $('<tr>');
+        headerRow.append('<th class="titleContent text-center">No</th>');
+        headerRow.append('<th class="titleContent">Name</th>');
+
+        // Append the score header for each game (Final) with index
+        let gameCount = 0;
+        
+        $.each(response.summedScores, function(index, contestant) {
+            headerRow.append('<th class="titleContent text-center">' + 'F'+ (index + 1) + '</th>');
+            if (index + 1 == Object.keys(contestant.score.split(',')).length) {
+                return false;
+            }
+            index++;
+        });
+        headerRow.append('<th class="titleContent text-center">Final Score</th>');
+        $.each(response.summedScores, function(index, contestant) {
+            let row = $('<tr>');
+            row.append('<td class="titleContent numberIncrement text-center">' + (index + 1) + '.' + '</td>');
+            row.append('<td class="titleContent nameList">' + contestant.full_name + '</td>');
+            // Append score data for each game (Final) to the row
+            // $.each(contestant.score.split(','), function(index, score) {
+            //     var scoreCell = $('<td class="titleContent text-center">');
+            //     scoreCell.text(score);
+            //     row.append(scoreCell);
+            // });
+            var maxGames = headerRow.find('th').length - 3; // Subtracting 2 to account for the "NO." and "Name" columns
+            var scores = fillScoreWithZero(contestant.score, maxGames);
+
+            // Append score data for each game (Final) to the row
+            $.each(scores, function(index, score) {
+                var scoreCell = $('<td class="titleContent text-center">');
+                scoreCell.text(score);
+                row.append(scoreCell);
+            });
+            var scoreCell = $('<td class="titleContent text-center">');
+            scoreCell.text(contestant.summed_score);
+            row.append(scoreCell);
+            row.append('</tr>');
+            tableHead.append(headerRow);
+            tableBody.append(row);
+        });
+
+        
+            
+        // $.each(response.scoresByFinal, function(gameID, scoreData) {
+        //     headerRow.append('<th class="titleContent text-center">' + 'F'+ (gameCount + 1) + '</th>');
+        //     gameCount++;
+        //     if (gameCount === Object.keys(scoreData).length) {
+        //         return false;
+        //     }
+        // });
+
+        // // set value for id="result-event-sport"
+        $('#result-event-sport').text(response.competition.event_name + ' - ' + response.competition.sport_name);
+        $('#result-competition-name').text(response.competition.level);
+        // // Loop through the finals data and populate the table
+        // $.each(response.contestants, function(index, contestant) {
+        //     var row = $('<tr>');
+        //     row.append('<td class="titleContent numberIncrement text-center">' + (index + 1) + '.' + '</td>');
+        //     row.append('<td class="titleContent nameList">' + response.contestantNames[contestant.ID_user] + '</td>');
+
+        //     // Append score data for each game (Final) to the row
+        //     $.each(response.scoresByFinal[contestant.ID_contestant], function(gameID, scoreData) {
+        //         var scoreCell = $('<td class="titleContent text-center">');
+
+        //         // if highlight is true, add class="text-primary" to the score
+        //         if (scoreData) {
+        //             scoreCell.text(scoreData.score);
+        //             if (scoreData.highlight) {
+        //                 scoreCell.addClass('text-primary');
+        //             }
+        //         } else {
+        //             scoreCell.text('N/A');
+        //         }
+
+        //         row.append(scoreCell);
+        //     });
+        //     row.append('</tr>');
+
+        //     tableBody.append(row);
+        // });
+        // headerRow.append('</tr>');
+
+        // tableHead.append(headerRow);
+    }
+
+    var defaultCompetitionId = $('#filter-result-btn-group input[type="radio"]:checked').val();
+    loadResult(defaultCompetitionId);
 </script>
 @stop

@@ -32,10 +32,21 @@ return [
     'event_name' => 'Event Name',
     'selected_category' => 'Selected Category',
     'close' => 'Close',
+    'registered_contestant' => 'Registered Contestant',
+    'name' => 'Name',
+    'origin' => 'Origin',
+    'category' => 'Category',
+    'contest_result' => 'Contest Result',
 
     // response
     'response_password_updated' => 'Your Password has been updated! Please login with your new password.',
     'response_login_failed' => 'Login failed! Please check your email and password.',
     'response_email_not_available' => 'The Email is not available, Check your writing!',
     'response_event_date_invalid' => 'The selected event is not open for registration. Or it has passed the registration time.',
+    'response_event_already_registered' => 'You already registered for this event.',
+    'response_competition_already_registered' => 'You already registered for this competition.',
+    'response_max_join_competition' => 'Maximum of competitions you can join in this event is :number1 . Pick less than :number2 categories',
+    'response_register_event_success' => 'You have successfully registered for the event!',
+    'response_failed' => 'Failed!',
+    'response_success' => 'Success!',
 ];

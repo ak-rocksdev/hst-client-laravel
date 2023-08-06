@@ -153,6 +153,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
+    z-index: 2;
     // color: #1a1b20;
     // background-color: #f6f6f6;
     transition: transform 0.3s ease-out; /* Transition for smooth animation */
@@ -439,8 +440,8 @@ body {
 .btn {
     padding: .75rem 1.5rem;
     color: var(--white);
-    border-radius: 0;
     &-whatsapp {
+        border-radius: 0;
         display: flex;
         align-items: center;
         gap: 12px;
@@ -456,6 +457,7 @@ body {
     }
 
     &-black {
+        border-radius: 0;
         display: flex;
         align-items: center;
         gap: 12px;
@@ -467,6 +469,15 @@ body {
         &:hover {
             color: var(--white);
             background-color: #383838;
+        }
+    }
+
+    &-white {
+        background-color: var(--white);
+        color: var(--black);
+        &:hover {
+            color: var(--white) !important;
+            background-color: var(--red-on-grey) !important;
         }
     }
 }

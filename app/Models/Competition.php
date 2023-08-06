@@ -9,6 +9,24 @@ class Competition extends Model
 {
     use HasFactory;
 
+    public function contestants()
+    {   
+        return $this->hasMany(Contestant::class, 'ID_competition', 'ID_competition')
+            ->where('attendance', 1);
+    }
+
+    public function gamesForFinals()
+    {
+        return $this->hasMany(Games::class, 'ID_competition', 'ID_competition')
+            ->where('ID_type', 3);
+    }
+
+    public function gameForFinal()
+    {
+        return $this->hasOne(Games::class, 'ID_competition', 'ID_competition')
+            ->where('ID_type', 3);
+    }
+
     protected $table = 'competition_list';
     protected $primaryKey = 'ID_competition';
     public $incrementing = false;

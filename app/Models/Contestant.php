@@ -11,6 +11,13 @@ class Contestant extends Model
 {
     use HasFactory;
 
+    public function scoresOnFinal()
+    {
+        return $this->hasMany(Score::class, 'ID_contestant', 'ID_contestant')
+            ->leftJoin('games', 'games.ID_games', 'score_list.ID_games')
+            ->where('games.ID_type', 3);
+    }
+
     public static function boot()
     {
         parent::boot();
