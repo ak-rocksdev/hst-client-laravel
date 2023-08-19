@@ -38,6 +38,20 @@ return [
     'origin' => 'Asal',
     'category' => 'Kategori',
     'contest_result' => 'Hasil Pertandingan',
+    'login_page_title' => 'Masuk ke Hyperscore',
+    'login' => 'Masuk',
+    'password' => 'Kata Sandi',
+    'your_password' => 'Kata Sandi Anda',
+    'create_account' => 'Buat Akun Baru',
+    'reset_password' => 'Set Ulang Kata Sandi',
+    'registration_page_title' => 'Buat Akun Hyperscore Baru',
+    'back_to_home' => 'Kembali ke Beranda',
+    'full_name' => 'Nama Lengkap',
+    'nickname' => 'Nama Panggilan',
+    'optional' => 'Opsional',
+    're_password' => 'Ulangi Kata Sandi',
+    'date_of_birth' => 'Tanggal Lahir',
+    'phone_number' => 'Nomor Telepon',
 
     // response
     'response_password_updated' => 'Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.',
@@ -50,4 +64,6 @@ return [
     'response_register_event_success' => 'Anda telah berhasil mendaftar untuk event ini!',
     'response_failed' => 'Gagal!',
     'response_success' => 'Berhasil!',
+    'response_email_already_exist' => 'Email yang anda tulis sudah terdaftar, Lakukan login! Jika lupa Kata Sandi, anda dapat melakukan Set Ulang di halaman login!',
+    'response_registration_success' => 'Anda telah berhasil mendaftar! Silakan masuk untuk melanjutkan.',
 ];

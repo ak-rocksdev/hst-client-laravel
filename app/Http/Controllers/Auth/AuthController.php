@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserRegisterRequest;
 
 use App\Models\User;
 use Auth;
@@ -94,5 +95,28 @@ class AuthController extends Controller
         DB::commit();
 
         return redirect()->route('login')->with('success', __('messages.response_password_updated'));
+    }
+
+    public function doRegister(UserRegisterRequest $request) {
+        DB::beginTransaction();
+
+        try {
+            $validated = $request->validated();
+            // return dd($validated);
+            $user = User::create($validated);
+
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('messages.response_registration_success'),
+                'code' => 200,
+                'redirect' => '/login'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('errors', $e->getMessage());
+        }
     }
 }

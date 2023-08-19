@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,11 @@ Route::middleware(['auth'])->group(function() {
 });
 
 Route::prefix('/event')->group(function () {
-    Route::get('/registered-contestant',    [ApiController::class, 'getRegisteredContestantByCompetitionId']);
-    Route::get('/result',                   [ApiController::class, 'getResultByCompetitionId']);
+    Route::get('/registered-contestant',        [ApiController::class, 'getRegisteredContestantByCompetitionId']);
+    Route::get('/result',                       [ApiController::class, 'getResultByCompetitionId']);
+});
+
+Route::prefix('/user')->group(function () {
+    Route::post('/register',                    [AuthController::class, 'doRegister']);
+    Route::post('/login',                       [AuthController::class, 'doLogin']);
 });

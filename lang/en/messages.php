@@ -37,6 +37,21 @@ return [
     'origin' => 'Origin',
     'category' => 'Category',
     'contest_result' => 'Contest Result',
+    'login_page_title' => 'Login to Hyperscore',
+    'login' => 'Login',
+    'password' => 'Password',
+    'your_password' => 'Your Password',
+    'create_account' => 'Create Account',
+    'reset_password' => 'Reset Password',
+    'registration_page_title' => 'Create New Hyperscore Account',
+    'back_to_home' => 'Back to Home',
+    'full_name' => 'Full Name / Real Name',
+    'nickname' => 'Display Name / Nick Name',
+    'optional' => 'Optional',
+    're_password' => 'Re-type Password',
+    'date_of_birth' => 'Date of Birth',
+    'phone_number' => 'Phone Number',
+
 
     // response
     'response_password_updated' => 'Your Password has been updated! Please login with your new password.',
@@ -49,4 +64,6 @@ return [
     'response_register_event_success' => 'You have successfully registered for the event!',
     'response_failed' => 'Failed!',
     'response_success' => 'Success!',
+    'response_email_already_exist' => 'The email is already registered! You need to login or reset your password.',
+    'response_registration_success' => 'Registration Success! Please do login to continue.',
 ];

@@ -21,6 +21,11 @@ Route::get('config-clear', function () {
     return dd("Config Cleared");
 });
 
+Route::get('optimize', function () {
+    \Artisan::call('optimize:clear');
+    return dd("Optimized");
+});
+
 Route::get('/',                         [PageController::class, 'index'])->name('home');
 Route::get('/event/{id}',               [PageController::class, 'eventPageById']);
 Route::get('/login',                    [PageController::class, 'viewUserLoginPage'])->name('login');
