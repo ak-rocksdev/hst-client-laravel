@@ -41,6 +41,8 @@ return [
     'login' => 'Login',
     'password' => 'Password',
     'your_password' => 'Your Password',
+    'confirm_password' => 'Confirm Password',
+    'dateofbirth' => 'Date of Birth',
     'create_account' => 'Create Account',
     'reset_password' => 'Reset Password',
     'registration_page_title' => 'Create New Hyperscore Account',
@@ -49,8 +51,9 @@ return [
     'nickname' => 'Display Name / Nick Name',
     'optional' => 'Optional',
     're_password' => 'Re-type Password',
-    'date_of_birth' => 'Date of Birth',
-    'phone_number' => 'Phone Number',
+    'phone' => 'Phone Number',
+    'country_code' => 'Country Code',
+    'language' => 'Language',
 
 
     // response

@@ -8,7 +8,15 @@ use Illuminate\Support\Facades\Auth;
 class AppServiceProvider extends ServiceProvider
 {
     private $models = [
+        '\App\Models\Competition',
+        '\App\Models\CompetitionType',
+        '\App\Models\Competition',
         '\App\Models\Contestant',
+        '\App\Models\Event',
+        '\App\Models\Games',
+        '\App\Models\Score',
+        '\App\Models\Sport',
+        // '\App\Models\User',
     ];
     /**
      * Register any application services.

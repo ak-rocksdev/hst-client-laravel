@@ -36,64 +36,76 @@
             {{ session('success') }}
         </div>
     @endif
-    <!-- NOTE: Add Datepicker, Validation FE, Success Response login Button -->
+    <!-- NOTE: Add Language, Datepicker, Validation FE, Success Response login Button -->
     <form id="form" data="form-ajax" method="post" action="/api/user/register">
         @csrf
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6 col-12">
-                    <div class="input-group mb-3">
+                    <div class="input-group has-validation mb-3">
                         <span class="input-group-text"><i class="fas fa-user mx-auto"></i></span>
                         <div class="form-floating">
                             <input type="text" class="form-control" name="full_name" id="full_name" placeholder="{{ __('messages.full_name') }}">
                             <label for="full_name">{{ __('messages.full_name') }}</label>
                         </div>
+                        <div class="invalid-feedback"></div>
                     </div>
-                    <div class="input-group mb-3">
+                    
+                    <div class="input-group has-validation mb-3">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <div class="form-floating">
                             <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                             <label for="email">Email</label>
                         </div>
+                        <div class="invalid-feedback"></div>
                     </div>
-                    <div class="input-group mb-3">
+                    <div class="input-group has-validation mb-3">
                         <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
                         <div class="form-floating">
-                            <input type="date" class="form-control" name="dateofbirth" id="datetimepicker" placeholder="{{ __('messages.date_of_birth') }}">
-                            <label for="datetimepicker">{{ __('messages.date_of_birth') }}</label>
+                            <input type="date" class="form-control" name="dateofbirth" id="dateofbirth" placeholder="{{ __('messages.dateofbirth') }}">
+                            <label for="dateofbirth">{{ __('messages.dateofbirth') }}</label>
                         </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="input-group has-validation mb-3">
+                        <span class="d-flex align-items-center fw-bold text-white me-3 mb-2">{{ __('messages.locale') }}</span>
+                        <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                            <input type="radio" class="btn-check" name="locale" value="en" id="english" autocomplete="off">
+                            <label class="btn btn-outline-light" for="english">English</label>
+
+                            <input type="radio" class="btn-check" name="locale" value="id" id="indo" autocomplete="off">
+                            <label class="btn btn-outline-light" for="indo">Indonesia</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-12">
-                    <div class="input-group mb-3">
+                    <div class="input-group has-validation mb-3">
                         <span class="input-group-text"><i class="fas fa-key"></i></span>
                         <div class="form-floating">
                             <input type="password" class="form-control" name="password" id="password" placeholder="{{ __('messages.your_password') }}">
                             <label for="password">{{ __('messages.your_password') }}</label>
                         </div>
+                        <div class="invalid-feedback"></div>
                     </div>
-                    <div class="input-group mb-3">
+                    <div class="input-group has-validation mb-3">
                         <span class="input-group-text"><i class="fas fa-key"></i></span>
                         <div class="form-floating">
-                            <input type="password" class="form-control" name="confirm_password" id="re_password" placeholder="{{ __('messages.re_password') }}">
-                            <label for="re_password">{{ __('messages.re_password') }}</label>
+                            <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="{{ __('messages.re_password') }}">
+                            <label for="confirm_password">{{ __('messages.re_password') }}</label>
                         </div>
+                        <div class="invalid-feedback"></div>
                     </div>
                     <div class="input-group">
                         <select class="form-select select2" name="country_code" id="country_code" aria-label="label select">
-                            <option value="">Country Code</option>
-                            <option value="1">+62</option>
-                            <option value="2">+64</option>
-                            <option value="3">+966</option>
+                            <option value="">{{ __('messages.country_code') }}</option>
                         </select>
                         <div class="form-floating" style="width: unset !important; min-width: 30%;">
                             <input type="text" class="form-control" name="phone" id="phone"
-                                placeholder="+62 8123456789" style="border-top-right-radius: 0.375rem !important; border-bottom-right-radius: 0.375rem !important;" required>
-                            <label for="phone">{{ __('messages.phone_number') }} / WhatsApp</label>
+                                placeholder="+62 8123456789" style="border-top-right-radius: 0.375rem !important; border-bottom-right-radius: 0.375rem !important;">
+                            <label for="phone">{{ __('messages.phone') }} / WhatsApp</label>
                         </div>
-                        <div class="invalid-feedback d-none">
-                            Please choose a username.
-                        </div>
+                        <div class="invalid-feedback"></div>
                     </div>
                 </div>
             </div>
@@ -117,9 +129,8 @@
             theme: 'bootstrap-5',
             templateResult: formatState,
             templateSelection: formatState,
-            language: "id",
+            // language: "id",
             dataType: 'json',
-            placeholder: 'Country Code',
             ajax: {
                 'url': 'https://www.supaskateboarding.com/api/countries',
                 'dataType': 'json',
@@ -168,6 +179,9 @@
         showLoading();
         e.preventDefault();
 
+        $('.invalid-feedback').html('');
+        $('.is-invalid').removeClass('is-invalid');
+
         let form = $('#form').serialize();
         let method = $('#form').attr('method');
         let action = $('#form').attr('action');
@@ -195,6 +209,24 @@
 
                 $('#response').html(errorHtml);
                 $('#response').slideDown();
+
+                $.each(messages, function (key, value) {
+                    var fieldName = key;
+                    var errorMessage = value[0]; // Get the first error message
+                    
+                    if (errorMessage) {
+                        // Field is invalid, remove is-valid class (if exists) and add is-invalid class
+                        $('#' + fieldName).removeClass('is-valid').addClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating').addClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.invalid-feedback').html(errorMessage);
+                    } else {
+                        // Field is valid, remove is-invalid class (if exists) and add is-valid class
+                        $('#' + fieldName).addClass('is-valid').removeClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating').removeClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating input').addClass('is-valid');
+                        $('#' + fieldName).closest('.input-group').find('.invalid-feedback').html('');
+                    }
+                });
             }
         };
         api(action, method, form, successCallback, errorCallback)

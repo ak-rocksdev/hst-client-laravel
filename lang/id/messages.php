@@ -41,6 +41,8 @@ return [
     'login_page_title' => 'Masuk ke Hyperscore',
     'login' => 'Masuk',
     'password' => 'Kata Sandi',
+    'confirm_password' => 'Konfirmasi Kata Sandi',
+    'dateofbirth' => 'Tanggal Lahir',
     'your_password' => 'Kata Sandi Anda',
     'create_account' => 'Buat Akun Baru',
     'reset_password' => 'Set Ulang Kata Sandi',
@@ -50,8 +52,9 @@ return [
     'nickname' => 'Nama Panggilan',
     'optional' => 'Opsional',
     're_password' => 'Ulangi Kata Sandi',
-    'date_of_birth' => 'Tanggal Lahir',
-    'phone_number' => 'Nomor Telepon',
+    'phone' => 'Nomor Telepon',
+    'country_code' => 'Kode Negara',
+    'locale' => 'Bahasa',
 
     // response
     'response_password_updated' => 'Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.',

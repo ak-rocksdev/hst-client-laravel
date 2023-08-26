@@ -102,7 +102,6 @@ class AuthController extends Controller
 
         try {
             $validated = $request->validated();
-            // return dd($validated);
             $user = User::create($validated);
 
 

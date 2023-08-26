@@ -27,13 +27,14 @@ class UserRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name' => 'required',
+            'full_name' => 'required|max:50',
             'email' => 'required|email|unique:user,email',
             'dateofbirth' => 'required|date',
+            'locale' => 'required|in:en,id',
             'password' => 'required|min:6',
             'confirm_password' => 'required|same:password',
             'country_code' => 'required',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits_between:6,20',
         ];
     }
 
@@ -41,6 +42,19 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'email.unique' => __('messages.response_email_already_exist'),
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'full_name' => __('messages.name'),
+            'dateofbirth' => __('messages.dateofbirth'),
+            'locale' => __('messages.locale'),
+            'password' => __('messages.password'),
+            'confirm_password' => __('messages.confirm_password'),
+            'country_code' => __('messages.country_code'),
+            'phone' => __('messages.phone'),
         ];
     }
 
