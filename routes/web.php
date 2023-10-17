@@ -33,5 +33,10 @@ Route::get('/logout',                   [AuthController::class, 'doLogout'])->na
 Route::get('/register',                 [PageController::class, 'viewUserRegisterPage']);
 Route::get('/update-password',          [PageController::class, 'viewUpdatePasswordPage']);
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/profile',                  [PageController::class, 'viewProfilePage']);
+    Route::get('/profile/edit',             [PageController::class, 'viewEditProfilePage']);
+});
+
 Route::post('/doLogin',                 [AuthController::class, 'doLogin']);
 Route::post('/forceUpdatePassword',     [AuthController::class, 'doForceUpdatePassword']);

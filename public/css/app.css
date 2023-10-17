@@ -23187,6 +23187,11 @@ readers do not read off random characters that represent icons */
   background-color: #ffdd33;
   color: var(--black) !important;
 }
+.btn-yellow.disabled {
+  background-color: #e6b800 !important;
+  border: none !important;
+  color: var(--black) !important;
+}
 .btn-dark {
   background-color: var(--dark);
   color: var(--white) !important;
@@ -24161,7 +24166,6 @@ tbody tr td {
 
 .e_container h2, .e_container .h2 {
   font-weight: 900;
-  margin-bottom: 2px !important;
 }
 
 .e_header {
@@ -24502,5 +24506,720 @@ ol ol > li:before {
   }
   .table-header-gradient .table-title-container {
     line-height: 25px;
+  }
+}
+.font2rem {
+  font-size: 2rem;
+}
+
+.total_point {
+  font-size: 2rem;
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.jumbotron {
+  padding: 0 !important;
+  overflow: hidden;
+  background-color: unset !important;
+}
+.jumbotron .jumbotronProfile {
+  height: 250px;
+  background-size: 100% auto;
+  background-position: center center;
+  filter: blur(30px);
+  background-repeat: no-repeat;
+  transform: scale(1.2);
+}
+
+.profileTopContainer {
+  margin-top: -8rem;
+  margin-bottom: 2.5rem;
+  align-items: flex-end;
+  flex-direction: row;
+}
+
+.marginTopMinus3 {
+  margin-top: -0.7rem;
+}
+
+.profileAvatar {
+  width: 260px;
+  display: inline-block !important;
+  vertical-align: baseline;
+  border: 10px solid #fff;
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  height: auto;
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin-right: 2rem;
+}
+
+.verifiedIcon {
+  color: #3897f0;
+  font-size: 1.8rem;
+}
+
+.userStat {
+  display: flex !important;
+  border-radius: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3rem;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+  height: 70px;
+  width: 100%;
+  background-color: #787878;
+  padding: 0.75rem 1.25rem;
+}
+.userStat p {
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 0 !important;
+}
+.userStat .value {
+  background-color: #fff;
+  color: #444445;
+  border-radius: 2rem;
+  padding: 0.3rem 0.8rem;
+  margin-top: -3px;
+  font-size: 1.5rem;
+}
+
+.dollarContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1db653 !important;
+  border-radius: 25px !important;
+  font-size: 1.3rem !important;
+  margin-right: 0.2rem;
+  width: 32px;
+  height: 32px;
+}
+
+.userStat .creditContainer {
+  padding: 0.34rem 0.8rem 0.2rem 0.2rem !important;
+}
+
+.textSubtitle {
+  font-weight: 400;
+  font-size: 1.5rem;
+  display: inline-block;
+  margin-bottom: unset !important;
+  line-height: 1;
+}
+
+.starContainer {
+  margin-left: 1rem !important;
+}
+
+.starLevel {
+  font-size: 1.5rem;
+  color: #ffcc00;
+}
+
+.hstCareerTitle {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
+.normalTitle {
+  font-size: 1.5rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.info-box {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  height: 80px;
+  display: flex;
+  cursor: default;
+  background-color: #c1202d;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+.info-box .icon {
+  display: inline-block;
+  text-align: center;
+  background-color: #616161;
+  width: 80px;
+}
+.info-box .icon i {
+  color: #fff;
+  font-size: 50px;
+  line-height: 80px;
+}
+.info-box .content {
+  display: inline-block;
+  padding: 7px 15px;
+}
+.info-box .content .text {
+  font-size: 13px;
+  margin-top: 7px;
+  color: #fff;
+  font-weight: 900;
+}
+.info-box .content .number {
+  font-weight: normal;
+  font-size: 2.5rem;
+  margin-top: -15px;
+  color: #fff;
+}
+.info-box.hover-expand-effect:after {
+  background-color: rgba(0, 0, 0, 0.1);
+  content: ".";
+  position: absolute;
+  left: 80px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  color: transparent;
+  transition: all 0.95s;
+}
+.info-box.hover-expand-effect:hover:after {
+  width: 100%;
+}
+
+.titleContentHead {
+  font-size: 2.4rem;
+  font-weight: 900;
+}
+
+.tableHead {
+  background-color: #3f4040;
+  padding: 15px 15px;
+  width: 80%;
+  color: #fff;
+}
+
+.pointContainer {
+  background-color: #bf1e2d;
+  color: #fff;
+  width: 20%;
+  vertical-align: middle;
+  padding: 20px 15px;
+  line-height: 1;
+}
+
+.total_point {
+  font-size: 3rem !important;
+}
+
+.event-link {
+  color: #fff;
+  text-decoration: none;
+}
+.event-link:hover {
+  color: var(--yellow);
+  text-decoration: none;
+}
+
+.image-zoom-button {
+  opacity: 0.5;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.image-zoom-button:hover {
+  opacity: 1;
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .jumbotron {
+    padding: 0 !important;
+    overflow: hidden;
+    background-color: unset !important;
+  }
+  .jumbotron .jumbotronProfile {
+    height: 250px;
+    background-size: 100% auto;
+    background-position: center center;
+    filter: blur(30px);
+    background-repeat: no-repeat;
+    transform: scale(1.2);
+  }
+  .profileTopContainer {
+    margin-top: -5.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .marginTopMinus3 {
+    margin-top: -0.7rem;
+  }
+  .profileAvatar {
+    width: 230px;
+    display: inline-block !important;
+    vertical-align: baseline;
+    border: 10px solid #fff;
+  }
+  .userStat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-bottom: 1.2rem;
+    width: 100%;
+  }
+  .userStat p {
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 0 !important;
+  }
+  .userStat span {
+    background-color: #fff;
+    color: #444445;
+    border-radius: 2rem;
+    padding: 0.3rem 0.8rem;
+    margin-top: -3px;
+    font-size: 1.5rem;
+  }
+  .dollarContainer {
+    display: inline-block;
+    background-color: #1db653 !important;
+    border-radius: 25px !important;
+    padding: 0.31em 0.3em 0.2em 0.45em !important;
+    font-size: 1.3rem !important;
+    position: unset !important;
+    margin-right: 0.2rem;
+    width: 32px;
+    height: 32px;
+  }
+  .userStat .creditContainer {
+    padding: 0.34rem 0.8rem 0.2rem 0.2rem !important;
+  }
+  .textSubtitle {
+    font-weight: 400;
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-bottom: unset !important;
+  }
+  .starContainer {
+    margin-left: 0 !important;
+    display: block;
+  }
+  .starLevel {
+    font-size: 1.5rem;
+    color: #ffcc00;
+  }
+  .hstCareerTitle {
+    font-size: 2.5rem;
+    color: #fff;
+  }
+  .normalTitle {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+  }
+  .info-box {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    height: 80px;
+    display: flex;
+    cursor: default;
+    background-color: #c1202d;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  .info-box .icon {
+    display: inline-block;
+    text-align: center;
+    background-color: #616161;
+    width: 80px;
+  }
+  .info-box .icon i {
+    color: #fff;
+    font-size: 50px;
+    line-height: 80px;
+  }
+  .info-box .content {
+    display: inline-block;
+    padding: 7px 15px;
+  }
+  .info-box .content .text {
+    font-size: 13px;
+    margin-top: 7px;
+    color: #fff;
+    font-weight: 900;
+  }
+  .info-box .content .number {
+    font-weight: normal;
+    font-size: 2.5rem;
+    margin-top: -15px;
+    color: #fff;
+  }
+  .info-box.hover-expand-effect:after {
+    background-color: rgba(0, 0, 0, 0.1);
+    content: ".";
+    position: absolute;
+    left: 80px;
+    top: 0;
+    width: 0;
+    height: 100%;
+    color: transparent;
+    transition: all 0.95s;
+  }
+  .info-box.hover-expand-effect:hover:after {
+    width: 100%;
+  }
+  .titleContentHead {
+    font-size: 2.4rem;
+    font-weight: 900;
+  }
+  .tableHead {
+    background-color: #3f4040;
+    padding: 15px 15px;
+    width: 80%;
+    color: #fff;
+  }
+  .pointContainer {
+    background-color: #bf1e2d;
+    color: #fff;
+    width: 20%;
+    height: 100%;
+    vertical-align: middle;
+    padding: 25px 15px;
+    line-height: 1;
+  }
+}
+@media screen and (min-width: 576px) and (max-width: 767px) {
+  .jumbotron {
+    padding: 0 !important;
+    overflow: hidden;
+    background-color: unset !important;
+  }
+  .jumbotron .jumbotronProfile {
+    height: 250px;
+    background-size: 100% auto;
+    background-position: center center;
+    filter: blur(30px);
+    background-repeat: no-repeat;
+    transform: scale(1.2);
+  }
+  .profileTopContainer {
+    margin-top: -5.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .marginTopMinus3 {
+    margin-top: -0.7rem;
+  }
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+  }
+  .profileAvatar {
+    width: 180px !important;
+    display: inline-block !important;
+    vertical-align: baseline;
+    border: 6px solid #fff;
+  }
+  .userStat {
+    display: flex !important;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-bottom: 1.2rem;
+    width: 100%;
+  }
+  .userStat p {
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 0 !important;
+  }
+  .userStat span {
+    background-color: #fff;
+    color: #444445;
+    position: absolute;
+    right: 15px;
+    border-radius: 2rem;
+    padding: 0.3rem 0.8rem;
+    margin-top: -3px;
+    font-size: 1.5rem;
+  }
+  .dollarContainer {
+    display: inline-block;
+    background-color: #1db653 !important;
+    border-radius: 25px !important;
+    padding: 0.31em 0.3em 0.2em 0.45em !important;
+    font-size: 1.3rem !important;
+    position: unset !important;
+    margin-right: 0.2rem;
+    width: 32px;
+    height: 32px;
+  }
+  .userStat .creditContainer {
+    padding: 0.34rem 0.8rem 0.2rem 0.2rem !important;
+  }
+  .textSubtitle {
+    font-weight: 400;
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-bottom: unset !important;
+  }
+  .starContainer {
+    margin-left: 0 !important;
+    display: block;
+  }
+  .starLevel {
+    font-size: 1.5rem;
+    color: #ffcc00;
+  }
+  .hstCareerTitle {
+    font-size: 2.5rem;
+    color: #fff;
+  }
+  .normalTitle {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+  }
+  .info-box {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    height: 80px;
+    display: flex;
+    cursor: default;
+    background-color: #c1202d;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  .info-box .icon {
+    display: inline-block;
+    text-align: center;
+    background-color: #616161;
+    width: 80px;
+  }
+  .info-box .icon i {
+    color: #fff;
+    font-size: 50px;
+    line-height: 80px;
+  }
+  .info-box .content {
+    display: inline-block;
+    padding: 7px 15px;
+  }
+  .info-box .content .text {
+    font-size: 13px;
+    margin-top: 7px;
+    color: #fff;
+    font-weight: 900;
+  }
+  .info-box .content .number {
+    font-weight: normal;
+    font-size: 2.5rem;
+    margin-top: -15px;
+    color: #fff;
+  }
+  .info-box.hover-expand-effect:after {
+    background-color: rgba(0, 0, 0, 0.1);
+    content: ".";
+    position: absolute;
+    left: 80px;
+    top: 0;
+    width: 0;
+    height: 100%;
+    color: transparent;
+    transition: all 0.95s;
+  }
+  .info-box.hover-expand-effect:hover:after {
+    width: 100%;
+  }
+  .titleContentHead {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+  .tableHead {
+    background-color: #3f4040;
+    padding: 15px 15px;
+    width: 80%;
+    color: #fff;
+  }
+  .pointContainer {
+    background-color: #bf1e2d;
+    color: #fff;
+    width: 20%;
+    height: 100%;
+    vertical-align: middle;
+    padding: 20px 15px;
+    line-height: 1;
+  }
+}
+@media screen and (max-width: 575px) {
+  .jumbotron {
+    padding: 0 !important;
+    overflow: hidden;
+    background-color: unset !important;
+  }
+  .jumbotron .jumbotronProfile {
+    height: 170px;
+    background-size: 100% auto;
+    background-position: center center;
+    filter: blur(30px);
+    background-repeat: no-repeat;
+    transform: scale(1.2);
+  }
+  .profileTopContainer {
+    margin-top: -95px;
+    margin-bottom: 2.5rem;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+  }
+  .marginTopMinus3 {
+    margin-top: -0.7rem;
+  }
+  .avatar-container {
+    display: flex;
+    justify-content: center;
+  }
+  .profileAvatar {
+    max-width: 180px;
+    display: inline-block !important;
+    vertical-align: baseline;
+    border: 7px solid #fff;
+    margin-right: 0;
+  }
+  .userStat {
+    display: flex !important;
+    font-size: 1.3rem;
+    line-height: 1;
+    margin-bottom: 1.2rem;
+    width: 100%;
+  }
+  .userStat p {
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 0 !important;
+  }
+  .userStat span {
+    background-color: #fff;
+    color: #444445;
+    position: absolute;
+    right: 15px;
+    border-radius: 2rem;
+    padding: 0.3rem 0.8rem;
+    margin-top: -6px;
+    font-size: 1.5rem;
+  }
+  .dollarContainer {
+    display: inline-block;
+    background-color: #1db653 !important;
+    border-radius: 25px !important;
+    padding: 0.31em 0.3em 0.2em 0.45em !important;
+    font-size: 1.3rem !important;
+    position: unset !important;
+    margin-right: 0.2rem;
+    width: 32px;
+    height: 32px;
+  }
+  .userStat .creditContainer {
+    padding: 0.34rem 0.8rem 0.2rem 0.2rem !important;
+  }
+  .textSubtitle {
+    font-weight: 400;
+    font-size: 1.2rem;
+    display: inline-block;
+    margin-bottom: unset !important;
+  }
+  .starContainer {
+    display: block;
+    margin-left: 0 !important;
+  }
+  .starLevel {
+    font-size: 1.5rem;
+    color: #ffcc00;
+  }
+  .hstCareerTitle {
+    font-size: 2rem;
+    color: #fff;
+  }
+  .normalTitle {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+  }
+  .info-box {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    height: 80px;
+    display: flex;
+    cursor: default;
+    background-color: #c1202d;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  .info-box .icon {
+    display: inline-block;
+    text-align: center;
+    background-color: #616161;
+    width: 80px;
+  }
+  .info-box .icon i {
+    color: #fff;
+    font-size: 50px;
+    line-height: 80px;
+  }
+  .info-box .content {
+    display: inline-block;
+    padding: 7px 15px;
+  }
+  .info-box .content .text {
+    font-size: 13px;
+    margin-top: 7px;
+    color: #fff;
+    font-weight: 900;
+  }
+  .info-box .content .number {
+    font-weight: normal;
+    font-size: 2rem;
+    margin-top: -15px;
+    color: #fff;
+  }
+  .info-box.hover-expand-effect:after {
+    background-color: rgba(0, 0, 0, 0.1);
+    content: ".";
+    position: absolute;
+    left: 80px;
+    top: 0;
+    width: 0;
+    height: 100%;
+    color: transparent;
+    transition: all 0.95s;
+  }
+  .info-box.hover-expand-effect:hover:after {
+    width: 100%;
+  }
+  .titleContentHead {
+    font-size: 1rem;
+    font-weight: 900;
+  }
+  .tableHead {
+    background-color: #3f4040;
+    padding: 15px 15px;
+    width: 70%;
+    color: #fff;
+  }
+  .pointContainer {
+    background-color: #bf1e2d;
+    color: #fff;
+    width: 30%;
+    height: 100%;
+    vertical-align: middle;
+    padding: 15px 15px;
+    line-height: 1;
+  }
+  img.logoInsideTable {
+    height: 50px !important;
   }
 }

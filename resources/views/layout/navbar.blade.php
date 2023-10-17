@@ -55,7 +55,7 @@
                 <i class="far fa-user-circle fa-lg me-2"></i><span class="me-2">user</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Profile</a>
+                <a class="dropdown-item" href="/profile">Profile</a>
                 <a class="dropdown-item" href="{{ url('/logout') }}">
                     {{ __('messages.logout') }}
                 </a>

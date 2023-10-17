@@ -40,6 +40,7 @@ class User extends Authenticatable
         'dateofbirth',
         'email',
         'password',
+        'new_password',
         'phone',
         'country',
         'city',
@@ -59,4 +60,11 @@ class User extends Authenticatable
         'updated_at',
         'updated_by'
     ];
+
+    public function getAuthPassword() {
+        if ($this->password_version == 1) {
+            return $this->new_password;
+        }
+        return $this->password;
+    }
 }

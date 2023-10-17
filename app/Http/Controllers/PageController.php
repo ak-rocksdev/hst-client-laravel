@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
 use App\Models\Event;
 use App\Models\Competition;
 use App\Models\Sport;
@@ -13,6 +14,7 @@ use App\Models\Score;
 use App\Models\CompetitionType;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 use Auth;
 
@@ -32,12 +34,39 @@ class PageController extends Controller
     {
         $event = Event::find($id);
 
+        if (!isset($event)) {
+            return abort(404);
+        }
+
+        // check if today is in between start_registration date and end_registration date
+        $startRegistration = new \DateTime($event->start_registration);
+        $endRegistration = new \DateTime($event->end_registration);
+
+        $today = new \DateTime(); // Current date and time
+
+        $isRegistrationOpen = $today >= $startRegistration && $today <= $endRegistration;
+
         $competitions = Competition::select('competition_list.*', 'sport.name as sports')
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
             ->where('ID_event', $id)
             ->orderBy('sport')
             ->get();
 
+        $groupedCompetitions = [];
+        foreach ($competitions as $competition) {
+            if (!isset($groupedCompetitions[$competition->sports])) {
+                $groupedCompetitions[$competition->sports] = [
+                    'sports' => $competition->sports,
+                    'levels' => [],
+                ];
+            }
+            
+            $groupedCompetitions[$competition->sports]['levels'][] = $competition->level;
+        }
+        
+        $groupedCompetitions = array_values($groupedCompetitions);
+        // return dd($groupedCompetitions);
+        
         $sports = Competition::select('sport.name as sports')
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
             ->where('ID_event', $id)
@@ -64,8 +93,8 @@ class PageController extends Controller
                         ->orderByDesc('sport.name')
                         ->orderByDesc('contestant_list.created_at')
                         ->get();
-        
-        return view('pages.event', compact('event', 'competitions', 'sports', 'contestants'));
+
+        return view('pages.event', compact('event', 'competitions', 'sports', 'contestants', 'isRegistrationOpen', 'groupedCompetitions'));
     }
 
     public function viewUserLoginPage(Request $request){
@@ -99,6 +128,88 @@ class PageController extends Controller
             return redirect()->back();
         }
         return view('pages.update-password', compact('findUserByEmail'));
+    }
+
+    public function viewProfilePage() {
+        $user = Auth::guard('web')->user();
+
+        // get the events that the user has joined include the score_list
+        $events = Event::select('event_list.*')
+            ->leftJoin('competition_list', 'event_list.ID_event', '=', 'competition_list.ID_event')
+            ->leftJoin('contestant_list', 'competition_list.ID_competition', '=', 'contestant_list.ID_competition')
+            ->where('contestant_list.ID_user', $user->ID_user)
+            ->where('contestant_list.attendance', 1)
+            ->orderByDesc('event_list.create_date')
+            ->distinct()
+            ->get();
+
+        $userEvents = DB::table('event_list as e')
+            ->join('competition_list as c', 'c.ID_event', '=', 'e.ID_event')
+            ->join('games as g', 'g.ID_competition', '=', 'c.ID_competition')
+            ->join('score_list as s', 's.ID_games', '=', 'g.ID_games')
+            ->join('contestant_list as con', 's.ID_contestant', '=', 'con.ID_contestant') // Using the 'contestant_list' table
+            ->join('competition_type as ct', 'ct.ID_type', '=', 'g.ID_type')
+            ->where('con.ID_user', $user->ID_user)
+            ->where('con.attendance', 1)
+            ->orderBy('e.start_date', 'desc')
+            ->orderBy('ct.ID_type', 'desc')
+            ->select('e.name as event_name', 'e.start_date', 'c.ID_competition', 'g.ID_type', 'ct.name as round_name', 's.score')
+            ->get();
+
+        $scores = DB::table('score_list as s')
+            ->join('games as g', 's.ID_games', '=', 'g.ID_games')
+            ->join('competition_list as c', 'g.ID_competition', '=', 'c.ID_competition')
+            ->join('event_list as e', 'c.ID_event', '=', 'e.ID_event')
+            ->join('contestant_list as con', 's.ID_contestant', '=', 'con.ID_contestant')
+            ->where('s.fixed', 0)
+            ->where('con.ID_user', $user->ID_user)
+            ->where('con.attendance', 1)
+            ->orderBy('e.start_date', 'desc')
+            ->orderByDesc('g.ID_type')
+            ->orderByDesc('s.score')
+            ->get(['e.name as event_name', 'c.level as level', 'e.ID_event', 'e.start_date', 'c.ID_competition', 'g.ID_type', 's.score', 'c.qualification', 'c.final']);;
+        // return dd($scores);
+        $processedScores = [];
+
+        foreach ($scores as $score) {
+            $key = $score->event_name . '_' . $score->ID_competition . '_' . $score->ID_type;
+
+            if (!isset($processedScores[$key])) {
+                $processedScores[$key] = [
+                    'event_name' => $score->event_name,
+                    'event_category' => $score->level,
+                    'start_date' => $score->start_date,
+                    'ID_event' => $score->ID_event,
+                    'ID_competition' => $score->ID_competition,
+                    'ID_type' => $score->ID_type,
+                    'total_score' => 0,
+                    'count' => 0
+                ];
+            }
+
+            $limit = ($score->ID_type == 1) ? $score->qualification : $score->final;
+            if ($processedScores[$key]['count'] < $limit) {
+                $processedScores[$key]['total_score'] += number_format($score->score, 2);
+                $processedScores[$key]['ID_type'] = $score->ID_type == 1 ? 'Qualification' : 'Final';
+                $processedScores[$key]['count']++;
+            }
+        }
+        
+        // $topScorer = DB::table('score_list as s')
+        //     ->join('contestant_list as c', 's.ID_contestant', '=', 'c.ID_contestant')
+        //     ->join('user as u', 'c.ID_user', '=', 'u.ID_user')
+        //     ->select('u.ID_user', 'u.full_name', DB::raw('count(s.ID_score) as score_count'))
+        //     ->groupBy('u.ID_user', 'u.full_name')
+        //     ->orderBy('score_count', 'desc')
+        //     ->get();
+        // return dd($user);
+
+        return view('pages.user.profile', compact('user', 'events', 'processedScores'));
+    }
+
+    public function viewEditProfilePage() {
+        $user = Auth::guard('web')->user();
+        return view('pages.user.edit-profile', compact('user'));
     }
 }
 

@@ -3,13 +3,22 @@
 -- Perubahan database:
 -- Table user
 
--- Tambah column: 
+-- Tambah column:
+
+-- new_password
+ALTER TABLE `user` ADD COLUMN `new_password` VARCHAR(100) DEFAULT NULL AFTER `password`;
 -- password_version (0: lama, 1: baru)
 ALTER TABLE `user` ADD password_version tinyint(1) DEFAULT 0 NOT NULL AFTER category;
 -- last_login_at
 ALTER TABLE `user` ADD last_login_at timestamp NULL AFTER password_version;
 -- locale
 ALTER TABLE `user` ADD locale varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL AFTER last_login_at;
+
+ALTER TABLE `user` 
+ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT NULL,
+ADD COLUMN `created_by` VARCHAR(36) NULL DEFAULT NULL,
+ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+ADD COLUMN `updated_by` VARCHAR(36) NULL DEFAULT NULL;
 
 -- Table Event_list
 -- Tambah column

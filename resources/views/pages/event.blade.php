@@ -92,7 +92,20 @@
 @section('body')
 <div class="jumbotron jumbotronImage" style="background-image: url();"> </div>
 <div class="hero-image-container">
-    <img class="project-main-image" src="{{ asset('assets/img/about-us-1.jpg') }}" alt="Event Poster">
+    @php
+        $file1 = '/competition/' . $event->ID_event . '/mbanner.png';
+        $file2 = '/competition/' . $event->ID_event . '/mbanner.jpg';
+        $defaultFile = '/competition/default-banner.jpg';
+
+        if (Storage::disk('public')->exists($file1)) {
+            $bannerUrl = asset('storage' . $file1);
+        } else if (Storage::disk('public')->exists($file2)) {
+            $bannerUrl = asset('storage' . $file2);
+        } else{
+            $bannerUrl = asset('storage' . $defaultFile);
+        }
+    @endphp
+    <img class="project-main-image" src="{{ $bannerUrl }}" alt="Event Poster">
     <div class="container hero-text-container">
         <div class="hero-text">
             <h1 class="text-white fw-bold">{{ $event->name }}</h1>
@@ -113,17 +126,28 @@
                     <div class="eventInfo e_subTitle">
                         <div class="row">
                             <div class="col-md-6 col-12">
-                                <i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }} | {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}
+                                <i class="far fa-clock me-2"></i> {{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }} | {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}
                             </div>
                             <div class="col-md-6 col-12">
-                                <i class="fas fa-map-marker-alt"></i> {{ $event->location }}
+                                <i class="fas fa-map-marker-alt me-2"></i> {{ $event->location }}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="eventInfo e_sportAndClass">
-                    <h4><i class="fas fa-award"></i>Skateboards</h4>
-                    <h5>Mens Street</h5> </div>
+                    <div class="row">
+                    @foreach ($groupedCompetitions as $groupedCompetition)
+                        <div class="col-6">
+                            <h4>
+                                <i class="fas fa-award"></i>{{ $groupedCompetition['sports'] }}
+                            </h4>
+                            @foreach ($groupedCompetition['levels'] as $level)
+                            <h5>{{ $level }}</h5>
+                            @endforeach
+                        </div>
+                    @endforeach
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-12 col-md-6">
@@ -132,12 +156,14 @@
                     <!-- <button class="btn btn-block text-center mbl-btn-ED paddingIn w-100" style="background-color:#1e2024">
                         <i class="fas fa-lock"></i> PRIVATE
                     </button> -->
-                    <button id="registrationButton" class="btn btn-block fs-4 fw-bold text-center w-100 mbl-btn-ED paddingIn btn-yellow btnRegistration">
-                        CONTESTANT REGISTRATION
+                    <button id="registrationButton" class="btn btn-block fs-4 fw-bold text-center w-100 mbl-btn-ED paddingIn btn-yellow text-uppercase {{ $isRegistrationOpen ? '' : 'disabled' }}">
+                        {{ $isRegistrationOpen ? __('messages.register_to_this_event') : __('messages.registration_closed') }}
                     </button>
                 </div>
                 <div class="col-12">
-                    <button class="btn btn-block text-center mbl-btn-ED paddingIn btnTnc btn-dark fs-4 fw-bold w-100" data-bs-toggle="modal" data-bs-target="#myModal2">READ TERMS AND CONDITIONS</button>
+                    <button class="btn btn-block text-center mbl-btn-ED paddingIn btnTnc btn-dark fs-4 fw-bold w-100 text-uppercase" data-bs-toggle="modal" data-bs-target="#myModal2">
+                        {{ __('messages.read_terms_and_conditions') }}
+                    </button>
                 </div>
                 <!-- <div class="col-12">
                     <button class="btn btn-block text-center mbl-btn-ED paddingIn btnLiveScore w-100"><i class="fas fa-circle fa-blink recordIcon"></i> WATCH LIVE SCORE</button>
@@ -154,7 +180,7 @@
             </h2>
         </div>
     </div>
-
+    @if($competitions->count() != 0)
     <div class="row mb-4">
         <div class="col-md-12">
             <label for="competition" class="form-label me-3 text-white fw-bold text-uppercase">Filter</label>
@@ -166,7 +192,9 @@
             </div>
         </div>
     </div>
+    @endif
     <!-- Tabel Registered Contestant -->
+    <!-- FIXME: $contestants if not set yet -->
     <div class="row mb-4">
         <div class="col-sm-12">
             <div class="table-header-gradient d-flex flex-row align-items-center p-3">
@@ -560,7 +588,7 @@
             if(response) {
                 let data = response.data;
                 // Assuming the API response contains 'data' and 'remainingSlots' properties
-                if (data.user_count == null) {
+                if (data.user_count == null || data.user_count == 0) {
                     // User is not registered, proceed with registration
                     openRegistrationModal();
                 } else if (data.remaining_slots > 0) {
@@ -585,6 +613,23 @@
         };
         errorCallback = function (xhr) {
             hideLoading();
+            let response = xhr.responseJSON.messages;
+            let messages = ''
+            Object.keys(response).forEach(function(field) {
+                messages += `<span class="fs-5 text-black"> ${response[field]} </span>`;
+            });
+            Swal.fire({
+                title: '<strong>{{ __("messages.response_failed") }}</strong>',
+                icon: 'error',
+                html: '<div>' + messages + '</div>',
+                showCloseButton: true,
+                showCancelButton: false,
+                focusConfirm: false,
+                confirmButtonText: '<i class="fas fa-times me-2"></i> {{ __("messages.close") }}',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+            }).then((result) => {
+                $('.modal').modal('hide');
+            })
             console.log('error', xhr.responseJSON)
         };
         api(action, method, data, successCallback, errorCallback);
@@ -757,7 +802,7 @@
                 row.append(scoreCell);
             });
             var scoreCell = $('<td class="titleContent text-center">');
-            scoreCell.text(contestant.summed_score);
+            scoreCell.text(contestant.final_score);
             row.append(scoreCell);
             row.append('</tr>');
             tableHead.append(headerRow);

@@ -69,24 +69,42 @@ class ApiController extends Controller
         $user = User::where('ID_user', $loggedInUser->ID_user)->first();
         $event = Event::where('ID_event', $request->ID_event)->first();
 
-        $maxJoinCompetition = $event->max_join_competition;
+        // check if today is in between start_registration date and end_registration date
+        $startRegistration = $event->start_registration;
+        $endRegistration = $event->end_registration;
 
-        // check on Contestant table if user with current ID_user and current event is already registered
-        $contestant = Contestant::where('ID_user', $user->ID_user)
-            ->join('competition_list', 'competition_list.ID_competition', 'contestant_list.ID_competition')
-            ->where('competition_list.ID_event', $event->ID_event)
-            ->get();
+        $today = new \DateTime(); // Current date and time
+        $start = new \DateTime($startRegistration);
+        $end = new \DateTime($endRegistration);
 
-        $data = [
-            'user_count' => $contestant->count(),
-            'remaining_slots' => $maxJoinCompetition - $contestant->count()
-        ];
+        if ($today >= $start && $today <= $end) {
+            $maxJoinCompetition = $event->max_join_competition;
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $data,
-            'code' => 200
-        ], 200);
+            // check on Contestant table if user with current ID_user and current event is already registered
+            $contestant = Contestant::where('ID_user', $user->ID_user)
+                ->join('competition_list', 'competition_list.ID_competition', 'contestant_list.ID_competition')
+                ->where('competition_list.ID_event', $event->ID_event)
+                ->get();
+
+            $data = [
+                'user_count' => $contestant->count(),
+                'remaining_slots' => $maxJoinCompetition - $contestant->count()
+            ];
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+                'code' => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    '0' => __('messages.response_event_date_invalid')
+                ],
+                'code' => 400
+            ], 400);
+        }
     }
 
     public function getRegisteredContestantByCompetitionId(Request $request) {
@@ -236,7 +254,26 @@ class ApiController extends Controller
                     ";
                         
         $summedScores = DB::select($query, [$ID_competition]);
-        // return dd($results);
+        foreach ($summedScores as $contestant) {
+            $scoresArray = explode(',', $contestant->score);
+            rsort($scoresArray, SORT_NUMERIC);
+            $contestant->sorted_scores = $scoresArray;
+        }
+        
+        // Step 2: Calculate final score based on top N scores
+        foreach ($summedScores as $contestant) {
+            $topNScores = array_slice($contestant->sorted_scores, 0, $competition->final);
+            $contestant->final_score = number_format(array_sum($topNScores), 2);
+        }
+        
+        // Step 3: Sort contestants based on final scores
+        usort($summedScores, function ($a, $b) {
+            return $b->final_score <=> $a->final_score; // Sort in descending order
+        });
+        
+        // Limit to top 10 contestants (or another number if you wish)
+        $topContestants = array_slice($summedScores, 0, 10);
+        
         // Get the contestants with their respective scores
         $scoresByFinal = [];
         foreach ($contestants as $contestant) {
@@ -301,7 +338,7 @@ class ApiController extends Controller
             // 'contestants' => $contestants,
             // 'contestantNames' => $contestantNames,
             // 'scoresByFinal' => $scoresByFinal
-            'summedScores' => $summedScores,
+            'summedScores' => $topContestants,
         ];
 
         return response()->json([

@@ -31,6 +31,12 @@
             background-color: #ffdd33;
             color: var(--black) !important;
         }
+        &.disabled {
+            // var(--yellow) but darker
+            background-color: #e6b800 !important;
+            border: none !important;
+            color: var(--black) !important;
+        }
     }
 
     &-dark {

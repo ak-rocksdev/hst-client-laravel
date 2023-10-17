@@ -18,14 +18,14 @@ class AuthController extends Controller
 {
     public function doLogin(UserLoginRequest $request) {
         $findUserByEmail = User::where('email', $request->email)->first();
-        $password = md5($request->get('password'));
+        $password = $findUserByEmail->password_version == 0 ? md5($request->get('password')) : $request->get('password');
 
         $user = [
             'email' => $request->get('email'),
             'password'=> $password
         ];
 
-        if($findUserByEmail && $findUserByEmail->password == $password) {
+        if($findUserByEmail && $findUserByEmail->password == $user['password']) {
             $request->session()->put('user-temp', $findUserByEmail->email);
             return response()->json([
                 'status' => 'success',
@@ -35,7 +35,6 @@ class AuthController extends Controller
             ], 200);
         }
 
-        $user['password'] = $request->get('password');
         $authenticated = Auth::attempt($user);
         if($authenticated) {
             $findUserByEmail->last_login_at = Carbon::now();
@@ -86,7 +85,7 @@ class AuthController extends Controller
         $findUserByEmail = User::where('email', $emailSession)->first();
         $password = bcrypt($request->get('password'));
 
-        $findUserByEmail->password = $password;
+        $findUserByEmail->new_password = $password;
         $findUserByEmail->password_version = 1;
         $findUserByEmail->save();
 
@@ -103,7 +102,6 @@ class AuthController extends Controller
         try {
             $validated = $request->validated();
             $user = User::create($validated);
-
 
             DB::commit();
 

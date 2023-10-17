@@ -113,11 +113,24 @@
                 <h2 class="fw-bold section-title">{{ __('messages.latestevent') }}</h2>
             </div>
             @foreach ($events as $event)
+            @php
+                $file1 = '/competition/' . $event->ID_event . '/sbanner.png';
+                $file2 = '/competition/' . $event->ID_event . '/sbanner.jpg';
+                $defaultFile = '/competition/default-banner.jpg';
+
+                if (Storage::disk('public')->exists($file1)) {
+                    $bannerUrl = asset('storage' . $file1);
+                } else if (Storage::disk('public')->exists($file2)) {
+                    $bannerUrl = asset('storage' . $file2);
+                } else{
+                    $bannerUrl = asset('storage' . $defaultFile);
+                }
+            @endphp
             <div class="col-12 col-lg-6">
                 <div class="row event-container-card mx-0 mb-4">
                     <div class="col-12 col-md-6 col-xl-4 event-image">
                         <div class="square-wrapper">
-                            <img src="{{ asset('assets/img/about-us-1.jpg') }}" alt="About Us" class="w-100 h-100">
+                            <img src="{{ $bannerUrl }}" alt="About Us" class="w-100 h-100">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-xl-8 py-3 px-4">
