@@ -30,7 +30,16 @@ class PageController extends Controller
         return view('index', compact('events'));
     }
 
-    public function eventPageById($id)
+    public function viewEventsPage()
+    {
+        $events = Event::where('type', 'competition')
+                        ->orderByDesc('end_date')
+                        ->get();
+
+        return view('pages.events', compact('events'));
+    }
+
+    public function viewEventPageById($id)
     {
         $event = Event::find($id);
 
@@ -168,7 +177,7 @@ class PageController extends Controller
             ->orderByDesc('g.ID_type')
             ->orderByDesc('s.score')
             ->get(['e.name as event_name', 'c.level as level', 'e.ID_event', 'e.start_date', 'c.ID_competition', 'g.ID_type', 's.score', 'c.qualification', 'c.final']);;
-        // return dd($scores);
+
         $processedScores = [];
 
         foreach ($scores as $score) {

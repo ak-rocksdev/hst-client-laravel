@@ -91,7 +91,7 @@
 
 @section('body')
 <div class="jumbotron jumbotronImage" style="background-image: url();"> </div>
-<div class="hero-image-container">
+<div class="hero-image-container-gradient">
     @php
         $file1 = '/competition/' . $event->ID_event . '/mbanner.png';
         $file2 = '/competition/' . $event->ID_event . '/mbanner.jpg';

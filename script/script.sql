@@ -1,9 +1,10 @@
 -- Langkah Setup Website
 
 -- Perubahan database:
+-- ===================================================================================================
 -- Table user
 
--- Tambah column:
+-- TAMBAH COLUMN:
 
 -- new_password
 ALTER TABLE `user` ADD COLUMN `new_password` VARCHAR(100) DEFAULT NULL AFTER `password`;
@@ -20,15 +21,31 @@ ADD COLUMN `created_by` VARCHAR(36) NULL DEFAULT NULL,
 ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 ADD COLUMN `updated_by` VARCHAR(36) NULL DEFAULT NULL;
 
+-- phone (tambah characters)
+ALTER TABLE `user` MODIFY COLUMN phone varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+-- run updateUserImages function inside API controller, and move user image to "user" folder inside storage
+
+
+-- ===================================================================================================
 -- Table Event_list
--- Tambah column
+
+-- TAMBAH COLUMN:
 -- max_join_competition
 ALTER TABLE `event_list` ADD max_join_competition tinyint(1) DEFAULT 1 NOT NULL AFTER registration_type;
 ALTER TABLE `event_list` ADD slug tinyint(1) DEFAULT 1 NOT NULL AFTER short_link; -- BELUM
 
--- phone tambah characters
-ALTER TABLE `user` MODIFY COLUMN phone varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
 
+
+
+
+
+
+
+
+
+
+-- ===================================================================================================
 
 -- QUERY VANS SHOWDOWN
 INSERT INTO user (full_name, nick_name, email, password, isActive, flag, level, stance, category)

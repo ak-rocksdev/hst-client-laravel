@@ -347,4 +347,23 @@ class ApiController extends Controller
             'code' => 200
         ], 200);
     }
+
+    public function updateUserImages() {
+        // Retrieve all users
+        $users = User::all();
+
+        foreach ($users as $user) {
+            // Construct the file path using the user's email
+            $filePath = storage_path('app/public/user/' . $user->email . '.jpg');
+
+            // Check if the file exists
+            if (File::exists($filePath)) {
+                // Update the photoFile column for the user
+                $user->photoFile = $user->email . '.jpg';
+                $user->save();
+            }
+        }
+        
+        return "Users updated!";
+    }
 }

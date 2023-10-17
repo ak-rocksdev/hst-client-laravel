@@ -149,7 +149,7 @@
                         </div>
                         <div class="form-group py-5 mw-100 d-block mx-auto" style="width: 400px">
                             <button class="btn btn-red fw-bold w-100 mb-2" type="submit">{{ __('messages.save') }}</button>
-                            <a href="/profile" class="btn button-black fw-bold w-100">{{ __('messages.back_to_profile') }}</a>
+                            <a href="/profile" class="btn button-black fs-4 fw-bold w-100">{{ __('messages.back_to_profile') }}</a>
                         </div>
                     </div>
                 </div>

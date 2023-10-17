@@ -23249,13 +23249,13 @@ body {
   justify-content: space-around;
 }
 
-.hero-image-container {
+.hero-image-container-gradient {
   position: relative;
   display: inline-block;
   width: 100%;
 }
 
-.hero-image-container::before {
+.hero-image-container-gradient::before {
   content: "";
   position: absolute;
   top: 0;
