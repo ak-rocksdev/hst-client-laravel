@@ -17,6 +17,8 @@ return [
     "see_services" => "See Our Services",
 
     "latestevent" => "Latest Event",
+    "viewevent" => "View Event",
+    "seemoreevent" => "See More Events",
 
     "about_us_title" => "Do Less Get More",
     "about_us_description" => "Experience the power of simplicity with Hyper Score. Our action sports management app revolutionizes the organizing, scoring, and administration. Streamline your processes, unleash your potential, and elevate your events to new heights. Join us and discover the ease and efficiency of Hyper Score Technology",

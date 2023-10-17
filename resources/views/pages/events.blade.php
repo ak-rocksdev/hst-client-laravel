@@ -27,13 +27,16 @@
         @php
             $file1 = '/competition/' . $event->ID_event . '/sbanner.png';
             $file2 = '/competition/' . $event->ID_event . '/sbanner.jpg';
+            $file3 = '/competition/' . $event->ID_event . '/mbanner.jpg';
             $defaultFile = '/competition/default-banner.jpg';
 
             if (Storage::disk('public')->exists($file1)) {
                 $bannerUrl = asset('storage' . $file1);
             } else if (Storage::disk('public')->exists($file2)) {
                 $bannerUrl = asset('storage' . $file2);
-            } else{
+            } else if (Storage::disk('public')->exists($file3)) {
+                $bannerUrl = asset('storage' . $file3);
+            } else {
                 $bannerUrl = asset('storage' . $defaultFile);
             }
         @endphp

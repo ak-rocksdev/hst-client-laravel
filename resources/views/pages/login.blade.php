@@ -48,7 +48,7 @@
                 <label class="text-white fw-bold mb-1" for="email">Email</label>
                 <div class="input-group input-group-lg">
                     <span class="input-group-text add-onColor"><i class="fas fa-at mx-auto"></i></span>
-                    <input id="email" name="email" class="form-control input-color" placeholder="example@email.com" autocomplete="off">
+                    <input id="email" name="email" type="email" class="form-control input-color" placeholder="example@email.com" autocomplete="off">
                 </div>
             </div>
             <div class="form-group mb-3">

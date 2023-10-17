@@ -1,6 +1,6 @@
 @extends('layout.template')
 
-@section('image-preview'){{ asset('assets/img/default-web-cover.jpg') }}@stop
+@section('image-preview'){{ asset('assets/img/bg-image-hst-1.jpg') }}@stop
 
 @section('title')Hyper Score Technology @stop
 
@@ -140,7 +140,7 @@
                         <p class="mb-0 text-black">{{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }} | {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}</p>
                         <p class="subcaption-section text-black">{{ $event->location }}</p>
                         <div class="d-block">
-                            <a href="/event/{{ $event->ID_event }}" class="button button-black">View Event</a>
+                            <a href="/event/{{ $event->ID_event }}" class="button button-black">{{ __('messages.viewevent') }}</a>
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
             <!-- See More Event Button -->
             <div class="col-12">
                 <div class="d-flex justify-content-center py-4">
-                    <a href="/events" class="button button-black">See More Events</a>
+                    <a href="/events" class="button button-black">{{ __('messages.seemoreevent') }}</a>
                 </div>
             </div>
         </div>

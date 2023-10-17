@@ -18,9 +18,11 @@ return [
     "see_services" => "See Our Services",
 
     "latestevent" => "Event Terbaru",
+    "viewevent" => "Lihat Event",
+    "seemoreevent" => "Lihat Semua Event",
 
     "about_us_title" => "Lakukan Lebih Sedikit Dapatkan Lebih Banyak",
-    "about_us_description" => "Experience the power of simplicity with Hyper Score. Our action sports management app revolutionizes the organizing, scoring, and administration. Streamline your processes, unleash your potential, and elevate your events to new heights. Join us and discover the ease and efficiency of Hyper Score Technology",
+    "about_us_description" => "Rasakan kekuatan kesederhanaan dengan Hyper Score. Aplikasi pengelolaan olahraga aksi kami merevolusi penyelenggaraan, penilaian, dan administrasi. Perhalus proses Anda, lepaskan potensi Anda, dan angkat acara Anda ke tingkatan yang baru. Bergabunglah dengan kami dan temukan kemudahan dan efisiensi Teknologi Hyper Score.",
     "more_about_us" => "More About Us (Coming Soon)",
 
     "contact_us_description" => "PUNYA PERTANYAAN?! MARI BICARA",

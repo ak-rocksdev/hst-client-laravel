@@ -65,7 +65,7 @@
         <div class="dropdown d-block">
             <button class="btn-dropdown" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-globe"></i>
-                <span class="ms-2">{{ !session('lang') ? 'ID' : (session('lang') == 'id' ? 'ID' : 'EN') }}</span>
+                <span class="ms-2">{{ !session('lang') ? 'EN' : (session('lang') == 'id' ? 'ID' : 'EN') }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-left slide-down" aria-labelledby="languageDropdown">
                 <li><a class="dropdown-item" href="/set-language/en">English</a></li>

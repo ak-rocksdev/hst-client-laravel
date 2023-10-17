@@ -254,14 +254,14 @@
 
                             </tr>
                         </thead>
-                        <div class="tableShadowLeft"></div>
+                        <!-- <div class="tableShadowLeft"></div> -->
                         <tbody id="result-table-body">
                             <!-- <tr>
                                 <td class="titleContent numberIncrement text-center">1</td>
                                 <td class="titleContent nameList">Nama</td>
                             </tr> -->
                         </tbody>
-                        <div class="tableShadowRight"></div>
+                        <!-- <div class="tableShadowRight"></div> -->
                     </table>
                 </div>
                 
