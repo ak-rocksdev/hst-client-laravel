@@ -22,7 +22,7 @@ class PageController extends Controller
 {
     public function index()
     {
-        $events = Event::orderByDesc('create_date')
+        $events = Event::orderByDesc('end_date')
             ->limit(4)
             ->get();
         

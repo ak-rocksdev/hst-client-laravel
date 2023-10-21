@@ -36,8 +36,8 @@
             {{ session('success') }}
         </div>
     @endif
-    <!-- NOTE: Add Language, Datepicker, Validation FE, Success Response login Button -->
-    <form id="form" data="form-ajax" method="post" action="/api/user/register">
+    <!-- NOTE: Add Datepicker, Validation FE, Success Response login Button -->
+    <form id="form" method="POST" action="/api/user/register">
         @csrf
         <div class="container">
             <div class="row justify-content-center">

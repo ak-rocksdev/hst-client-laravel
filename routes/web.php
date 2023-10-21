@@ -16,25 +16,21 @@ use App\Http\Controllers\Auth\AuthController;
 |
 */
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('config-clear', function () {
-        \Artisan::call('config:cache');
-        \Artisan::call('config:clear');
-        return dd("Config Cleared");
-    });
+Route::get('config-clear', function () {
+    \Artisan::call('config:cache');
+    \Artisan::call('config:clear');
+    return dd("Config Cleared");
+});
 
-    Route::get('optimize', function () {
-        \Artisan::call('optimize:clear');
-        return dd("Optimized");
-    });
+Route::get('optimize', function () {
+    \Artisan::call('optimize:clear');
+    return dd("Optimized");
 });
 
 Route::get('/linkstorage', function () {
     symlink('/home/metroyal/dev.hyperscore/engine/storage/app/public',  '/home/metroyal/dev.hyperscore/storage');
-    return dd('OK');
+    return dd('Storage link created');
 });
-
-// group middleware route for language
 
 Route::group(['middleware' => 'language'], function () {
     Route::get('/',                         [PageController::class, 'index'])->name('home');

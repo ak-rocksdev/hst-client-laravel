@@ -15,6 +15,9 @@ window.api = function (endpoint, method, data, successCallback, errorCallback) {
         url: endpoint,
         type: method,
         data: data,
+        headers: {
+            'Accept': 'application/json',
+        },
         success: successCallback,
         error: errorCallback
     });

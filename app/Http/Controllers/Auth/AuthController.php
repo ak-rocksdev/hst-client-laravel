@@ -37,6 +37,9 @@ class AuthController extends Controller
 
         $authenticated = Auth::attempt($user);
         if($authenticated) {
+            if($findUserByEmail->last_login_at == null) {
+                session()->put('url.intended', '/');
+            }
             $findUserByEmail->last_login_at = Carbon::now();
             $findUserByEmail->save();
 

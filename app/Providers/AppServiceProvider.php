@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
         '\App\Models\Games',
         '\App\Models\Score',
         '\App\Models\Sport',
-        // '\App\Models\User',
+        '\App\Models\User',
     ];
     /**
      * Register any application services.

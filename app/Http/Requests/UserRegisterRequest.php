@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use DB;
 
 class UserRegisterRequest extends FormRequest
 {
@@ -61,9 +62,12 @@ class UserRegisterRequest extends FormRequest
     public function validated($key = null, $default = null)
     {
         $passwordHash = bcrypt($this->password);
+        $userID = DB::table('user')->max('ID_user') + 1;
         $this->merge(
             [
+                'ID_user'       => $userID,
                 'password'      => $passwordHash,
+                'new_password'  => $passwordHash,
                 'phone'         => $this->country_code . $this->phone,
                 'password_version' => 1,
                 'flag'          => 0,
