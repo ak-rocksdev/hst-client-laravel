@@ -194,7 +194,7 @@
     </div>
     @endif
     <!-- Tabel Registered Contestant -->
-    <!-- FIXME: $contestants if not set yet -->
+    <!-- NOTE: $contestants if not set yet, to be fixed later when working on Event Creation -->
     <div class="row mb-4">
         <div class="col-sm-12">
             <div class="table-header-gradient d-flex flex-row align-items-center p-3">

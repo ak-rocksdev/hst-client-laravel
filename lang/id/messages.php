@@ -75,10 +75,12 @@ return [
     "save" => "Simpan",
     "back_to_profile" => "Kembali ke Profil",
     "country" => "Negara",
+    "states" => "Negara Bagian / Provinsi",
     "province" => "Provinsi",
     "city" => "Kota",
     "district" => "Kecamatan",
     "subdistrict" => "Kelurahan",
+    "required" => "Wajib diisi",
 
     "update_password" => "Perbarui Kata Sandi",
     "old_password" => "Kata Sandi Lama",

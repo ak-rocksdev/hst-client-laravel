@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\App;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserLoginRequest;
@@ -42,6 +44,8 @@ class AuthController extends Controller
             }
             $findUserByEmail->last_login_at = Carbon::now();
             $findUserByEmail->save();
+
+            session(['lang' => $findUserByEmail->locale]);
 
             return response()->json([
                 'status' => 'error',

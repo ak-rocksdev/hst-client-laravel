@@ -74,10 +74,12 @@ return [
     "save" => "Save",
     "back_to_profile" => "Back to Profile",
     "country" => "Country",
+    "states" => "States",
     "province" => "Province",
     "city" => "City",
     "district" => "District",
     "subdistrict" => "Subdistrict",
+    "required" => "Required",
 
     "update_password" => "Update Password",
     "old_password" => "Old Password",

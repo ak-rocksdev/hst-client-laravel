@@ -14,6 +14,8 @@ ALTER TABLE `user` ADD password_version tinyint(1) DEFAULT 0 NOT NULL AFTER cate
 ALTER TABLE `user` ADD last_login_at timestamp NULL AFTER password_version;
 -- locale
 ALTER TABLE `user` ADD locale varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL AFTER last_login_at;
+-- country_code
+ALTER TABLE `user` ADD country_code timestamp NULL AFTER new_password;
 
 ALTER TABLE `user` 
     ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT NULL,

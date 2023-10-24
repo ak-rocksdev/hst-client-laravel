@@ -48,10 +48,10 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-xl-8 py-3 px-4">
+                    <p class="mb-0 text-danger fs-5 fw-bold">{{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }}</p>
                     <a class="no-link" href="#">
-                        <h3 class="fw-bold text-black">{{ $event->name }}</h3>
+                        <h3 class="fw-bold text-black mb-0">{{ $event->name }}</h3>
                     </a>
-                    <p class="mb-0 text-black">{{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }} | {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}</p>
                     <p class="subcaption-section text-black">{{ $event->location }}</p>
                     <div class="d-block">
                         <a href="/event/{{ $event->ID_event }}" class="button button-black">View Event</a>

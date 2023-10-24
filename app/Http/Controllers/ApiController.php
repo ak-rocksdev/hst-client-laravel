@@ -10,12 +10,14 @@ use App\Models\Event;
 use App\Models\Contestant;
 use App\Models\Games;
 use App\Models\Score;
+use App\Models\UserOrigin;
 
 use DB;
 
 use Auth;
 
 use App\Http\Requests\CreateContestantRequest;
+use App\Http\Requests\UserUpdateRequest;
 
 class ApiController extends Controller
 {
@@ -348,6 +350,7 @@ class ApiController extends Controller
         ], 200);
     }
 
+    // API to fix Database (Used for setup only)
     public function updateUserImages() {
         // Retrieve all users
         $users = User::all();
@@ -365,5 +368,84 @@ class ApiController extends Controller
         }
         
         return "Users updated!";
+    }
+
+    public function updateUserById(UserUpdateRequest $request) {
+        $data = $request->validated();
+        // return dd($data);
+
+        $user = User::where('ID_user', $data['user']['ID_user'])->first();
+        if($user->locale != $data['user']['locale']) {
+            session(['lang' => $data['user']['locale']]);
+        }
+
+        // check if any data change from the previous data use isDirty()
+        $user->full_name = $data['user']['full_name'];
+        $user->nick_name = $data['user']['nick_name'];
+        $user->email = $data['user']['email'];
+        $user->dateofbirth = $data['user']['dateofbirth'];
+        $user->stance = $data['user']['stance'];
+        $user->country_code = $data['user']['country_code'];
+        $user->phone = $data['user']['phone'];
+        $user->country_code_id = $data['user']['country_code_id'];
+        $user->instagram = $data['user']['instagram'];
+        
+        $userDirty = $user->isDirty();
+
+        if($userDirty) {
+            $user->update($data['user']);
+        }
+
+        $user->update($data['user']);
+
+        $userOrigin = UserOrigin::where('user_id', $data['user_origin']['user_id'])->first();
+
+        if($userOrigin) {
+            $userOrigin->user_id = $data['user_origin']['user_id'];
+            $userOrigin->country_id = $data['user_origin']['country_id'];
+            $userOrigin->country_name = $data['user_origin']['country_name'];
+            $userOrigin->state_id = $data['user_origin']['state_id'];
+            $userOrigin->state_name = $data['user_origin']['state_name'];
+            $userOrigin->city_id = $data['user_origin']['city_id'];
+            $userOrigin->city_name = $data['user_origin']['city_name'];
+            $userOrigin->indo_province_id = $data['user_origin']['indo_province_id'];
+            $userOrigin->indo_province_name = $data['user_origin']['indo_province_name'];
+            $userOrigin->indo_city_id = $data['user_origin']['indo_city_id'];
+            $userOrigin->indo_city_name = $data['user_origin']['indo_city_name'];
+        }
+        
+        // check if $userOrigin isDirty()
+        if($userOrigin == null) {
+            UserOrigin::create($data['user_origin']);
+        } else {
+            if($userOrigin->isDirty()) {
+                $userOrigin->update($data['user_origin']);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $user,
+            'code' => 200,
+            'redirect' => $userDirty ? '/profile/edit' : null
+        ], 200);
+    }
+
+    public function getUserOriginByUserId($userId) {
+        $userOrigin = UserOrigin::where('user_id', $userId)->first();
+        return response()->json([
+            'status' => 'success',
+            'data' => $userOrigin,
+            'code' => 200
+        ], 200);
+    }
+
+    public function getCountryCodeDetail($countryCode) {
+        $countryCodeDetail = DB::table('country_code')->where('country_code', $countryCode)->first();
+        return response()->json([
+            'status' => 'success',
+            'data' => $countryCodeDetail,
+            'code' => 200
+        ], 200);
     }
 }

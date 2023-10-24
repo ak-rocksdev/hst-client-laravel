@@ -42,7 +42,7 @@
         </div>
     @endif
     <!-- NOTE: Add Language, Datepicker, Validation FE, Success Response login Button -->
-    <form id="form" data="form-ajax" method="post" action="/api/user/register">
+    <form id="form" data="form-ajax" method="put" action="/api/user/update">
         @csrf
         <div class="container">
             <div class="row">
@@ -129,6 +129,14 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-12">
+                            <div class="input-group has-validation mb-3">
+                                <span class="input-group-text">Instagram</span>
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" value="{{ $user->instagram }}" name="instagram" id="instagram" placeholder="Instagram Account">
+                                    <label for="instagram">www.instagram.com/</label>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
                             <div class="input-group">
                                 <select class="form-select select2" name="country_code" id="country_code" aria-label="label select">
                                     <option value="">{{ __('messages.country_code') }}</option>
@@ -144,6 +152,44 @@
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.country') }}</span>
                                 <select class="form-select select2 form-select-lg" name="country" id="country" aria-label="label select">
                                     <option value="">{{ __('messages.country') }}</option>
+                                </select>
+                            </div>
+                            <!-- If the selection value != 'id', show this elements -->
+                            <div class="input-group mt-3 h-58px statesContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.states') }}</span>
+                                <select class="form-select select2 form-select-lg" name="states" id="states" aria-label="label select">
+                                    <option value="">{{ __('messages.states') }}</option>
+                                </select>
+                            </div>
+                            <div class="input-group mt-3 h-58px cityContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.city') }}</span>
+                                <select class="form-select select2 form-select-lg" name="city" id="city" aria-label="label select">
+                                    <option value="">{{ __('messages.city') }}</option>
+                                </select>
+                            </div>
+                            <!-- If the selection value == 'id', show this elements -->
+                            <div class="input-group mt-3 h-58px provinceContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.province') }}</span>
+                                <select class="form-select select2 form-select-lg" name="province" id="province" aria-label="label select">
+                                    <option value="">{{ __('messages.province') }}</option>
+                                </select>
+                            </div>
+                            <div class="input-group mt-3 h-58px indoCityContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.city') }}</span>
+                                <select class="form-select select2 form-select-lg" name="indoCity" id="indoCity" aria-label="label select">
+                                    <option value="">{{ __('messages.city') }}</option>
+                                </select>
+                            </div>
+                            <div class="input-group mt-3 h-58px districtContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.district') }}</span>
+                                <select class="form-select select2 form-select-lg" name="district" id="district" aria-label="label select">
+                                    <option value="">{{ __('messages.district') }}</option>
+                                </select>
+                            </div>
+                            <div class="input-group mt-3 h-58px subdistrictContainer">
+                                <span class="input-group-text" id="basic-addon1">{{ __('messages.subdistrict') }}</span>
+                                <select class="form-select select2 form-select-lg" name="subdistrict" id="subdistrict" aria-label="label select">
+                                    <option value="">{{ __('messages.subdistrict') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -230,59 +276,16 @@
 @stop
 
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#country').select2({
-            theme: 'bootstrap-5',
-            templateResult: formatState,
-            templateSelection: formatState,
-            // language: "id",
-            dataType: 'json',
-            ajax: {
-                'url': 'https://www.supaskateboarding.com/api/countries',
-                'dataType': 'json',
-                data: function (params) {
-                    return {
-                        term : params.term
-                    };
-                },
-                "method": "GET",
-                processResults: function (result) {
-                    // $('#city').select2('enable');
-                    return {
-                        results: $.map(result.data[0], function (item) {
-                            return {
-                                id: item.phonecode,
-                                text: item.name,
-                                phone: item.phonecode,
-                                flag: item.iso2
-                            }
-                        })
-                    }
-                }
-            }
-        });
-        $('.select2-selection').addClass('d-flex align-items-center');
-    });
+    let country_id = "{{ $user->country_id ? $user->country_id : '' }}";
+    let user_id = "{{ $user->ID_user }}";
 
-    function formatState (state) {
-        if (!state.id) {
-            return state.text;
-        }
-
-        var baseUrl = "/assets/img/flag/";
-        var $state = $(
-            '<span><img class="img-flag" width="15"/> <span></span><span class="countrycode"></span></span>'
-        );
-
-        $state.find("span").text(state.text);
-        $state.find("span.countrycode").text(' (' + state.phone + ')');
-        $state.find("img").attr("src", baseUrl + "/" + state.flag.toLowerCase() + ".png");
-
-        return $state;
-    };
-
+    let currentUserPhoneCode = "{{ $user->country_code }}";
+    let currentUserCountryCodeId = "{{ $user->country_code_id }}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('js/geo-location-options.js') }}"></script>
+<script>
     $('#form').on('submit', function(e) {
         showLoading();
         e.preventDefault();
@@ -291,8 +294,18 @@
         $('.is-invalid').removeClass('is-invalid');
 
         let form = $('#form').serialize();
+
+        form += '&country_name=' + encodeURIComponent($('#country').select2('data')[0].text);
+        form += '&state_name=' + encodeURIComponent($('#states').val() ? $('#states').select2('data')[0].text : '');
+        form += '&city_name=' + encodeURIComponent($('#city').val() ? $('#city').select2('data')[0].text : '');
+        form += '&indo_province_name=' + encodeURIComponent($('#province').val() ? $('#province').select2('data')[0].text : '');
+        form += '&indo_city_name=' + encodeURIComponent($('#indoCity').val() ? $('#indoCity').select2('data')[0].text : '');
+        form += '&country_code_id=' + encodeURIComponent($('#country_code').val() ? $('#country_code').select2('data')[0].flag : '');
+
+        
         let method = $('#form').attr('method');
         let action = $('#form').attr('action');
+        console.log(form)
 
         successCallback = function(response) {
             hideLoading();

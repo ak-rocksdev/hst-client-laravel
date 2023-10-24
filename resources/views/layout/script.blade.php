@@ -1,4 +1,7 @@
 <script>
+    $(document).ready(function() {
+        hideLoading();
+    });
     // Get all the links
     const links = document.querySelectorAll('a');
 

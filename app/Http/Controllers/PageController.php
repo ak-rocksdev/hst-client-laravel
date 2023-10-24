@@ -218,7 +218,13 @@ class PageController extends Controller
 
     public function viewEditProfilePage() {
         $user = Auth::guard('web')->user();
-        return view('pages.user.edit-profile', compact('user'));
+
+        $userOrigin = DB::table('user_origin')
+            ->where('user_id', $user->ID_user)
+            ->first();
+
+        $user->country_id = $userOrigin->country_id ?? null;
+        return view('pages.user.edit-profile', compact('user', 'userOrigin'));
     }
 }
 

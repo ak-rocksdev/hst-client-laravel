@@ -27,6 +27,10 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/register',                [ApiController::class, 'registerContestantByCompetitionId']);
         Route::get('/check-status-by-user',     [ApiController::class, 'getEventStatusByUserId']);
     });
+    Route::prefix('/user')->group(function () {
+        Route::put('/update',                       [ApiController::class, 'updateUserById']);
+        Route::get('/origin/{user_id}',             [ApiController::class, 'getUserOriginByUserId']);
+    });
 });
 
 Route::prefix('/event')->group(function () {
