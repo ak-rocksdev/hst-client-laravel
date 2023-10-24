@@ -57,6 +57,7 @@ return [
     "phone" => "Nomor Telepon",
     "country_code" => "Kode Negara",
     "locale" => "Bahasa",
+    "origin" => "Informasi Asal",
 
     "hyperscore_experience" => "Pengalaman Hyperscore",
     "event_experience" => "Pengalaman Event",

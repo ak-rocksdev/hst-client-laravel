@@ -148,6 +148,7 @@
                                 </div>
                                 <div class="invalid-feedback"></div>
                             </div>
+                            <span class="d-flex align-items-center fw-bold text-white me-3 my-4">{{ __('messages.origin') }}</span>
                             <div class="input-group mt-3 h-58px">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.country') }}</span>
                                 <select class="form-select select2 form-select-lg" name="country" id="country" aria-label="label select">
@@ -155,38 +156,38 @@
                                 </select>
                             </div>
                             <!-- If the selection value != 'id', show this elements -->
-                            <div class="input-group mt-3 h-58px statesContainer">
+                            <div class="input-group mt-3 h-58px statesContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.states') }}</span>
                                 <select class="form-select select2 form-select-lg" name="states" id="states" aria-label="label select">
                                     <option value="">{{ __('messages.states') }}</option>
                                 </select>
                             </div>
-                            <div class="input-group mt-3 h-58px cityContainer">
+                            <div class="input-group mt-3 h-58px cityContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.city') }}</span>
                                 <select class="form-select select2 form-select-lg" name="city" id="city" aria-label="label select">
                                     <option value="">{{ __('messages.city') }}</option>
                                 </select>
                             </div>
                             <!-- If the selection value == 'id', show this elements -->
-                            <div class="input-group mt-3 h-58px provinceContainer">
+                            <div class="input-group mt-3 h-58px provinceContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.province') }}</span>
                                 <select class="form-select select2 form-select-lg" name="province" id="province" aria-label="label select">
                                     <option value="">{{ __('messages.province') }}</option>
                                 </select>
                             </div>
-                            <div class="input-group mt-3 h-58px indoCityContainer">
+                            <div class="input-group mt-3 h-58px indoCityContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.city') }}</span>
                                 <select class="form-select select2 form-select-lg" name="indoCity" id="indoCity" aria-label="label select">
                                     <option value="">{{ __('messages.city') }}</option>
                                 </select>
                             </div>
-                            <div class="input-group mt-3 h-58px districtContainer">
+                            <div class="input-group mt-3 h-58px districtContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.district') }}</span>
                                 <select class="form-select select2 form-select-lg" name="district" id="district" aria-label="label select">
                                     <option value="">{{ __('messages.district') }}</option>
                                 </select>
                             </div>
-                            <div class="input-group mt-3 h-58px subdistrictContainer">
+                            <div class="input-group mt-3 h-58px subdistrictContainer" style="display: none">
                                 <span class="input-group-text" id="basic-addon1">{{ __('messages.subdistrict') }}</span>
                                 <select class="form-select select2 form-select-lg" name="subdistrict" id="subdistrict" aria-label="label select">
                                     <option value="">{{ __('messages.subdistrict') }}</option>

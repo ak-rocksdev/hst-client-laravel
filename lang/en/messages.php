@@ -56,6 +56,7 @@ return [
     "phone" => "Phone Number",
     "country_code" => "Country Code",
     "locale" => "Language",
+    "origin" => "Origin Info",
 
     "hyperscore_experience" => "Hyperscore Experience",
     "event_experience" => "Event Experience",

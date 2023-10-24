@@ -25,19 +25,14 @@
         </div>
         @foreach ($events as $event)
         @php
-            $file1 = '/competition/' . $event->ID_event . '/sbanner.png';
-            $file2 = '/competition/' . $event->ID_event . '/sbanner.jpg';
-            $file3 = '/competition/' . $event->ID_event . '/mbanner.jpg';
+            $files = ['/competition/' . $event->ID_event . '/sbanner.png', '/competition/' . $event->ID_event . '/sbanner.jpg', '/competition/' . $event->ID_event . '/mbanner.jpg'];
             $defaultFile = '/competition/default-banner.jpg';
-
-            if (Storage::disk('public')->exists($file1)) {
-                $bannerUrl = asset('storage' . $file1);
-            } else if (Storage::disk('public')->exists($file2)) {
-                $bannerUrl = asset('storage' . $file2);
-            } else if (Storage::disk('public')->exists($file3)) {
-                $bannerUrl = asset('storage' . $file3);
-            } else {
-                $bannerUrl = asset('storage' . $defaultFile);
+            $bannerUrl = asset('storage' . $defaultFile);
+            foreach ($files as $file) {
+                if (Storage::disk('public')->exists($file)) {
+                    $bannerUrl = asset('storage' . $file);
+                    break;
+                }
             }
         @endphp
         <div class="col-12 col-lg-6">

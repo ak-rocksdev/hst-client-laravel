@@ -95,8 +95,6 @@ const select2Configs = {
         theme: 'bootstrap-5',
         language: "id",
         dataType: 'json',
-        // templateResult: formatState,
-        // templateSelection: formatState,
         ajax: {
             'url': 'https://www.supaskateboarding.com/api/countries',
             'dataType': 'json',
@@ -263,12 +261,10 @@ const select2Configs = {
 };
 
 async function initializeElements(select2Configs) {
-    for (let [element, config] of Object.entries(select2Configs)) {
+    for (const [element, config] of Object.entries(select2Configs)) {
         await initializeSelect2(element, config, config.onSelect);
-    }
 
-    for (let [element, config] of Object.entries(select2Configs)) {
-        if (element == '#country_code' && currentUserPhoneCode) {
+        if (element === '#country_code' && currentUserPhoneCode) {
             $(element).val(currentUserPhoneCode).trigger('change');
         }
     }
@@ -279,23 +275,6 @@ async function initializeElements(select2Configs) {
 }
 
 initializeElements(select2Configs);
-
-function formatState (state) {
-    if (!state.id) {
-        return state.text;
-    }
-
-    var baseUrl = "/assets/img/flag/";
-    var $state = $(
-        '<span><img class="img-flag" width="15"/> <span></span></span>'
-    );
-
-    $state.find("span").text(state.text);
-    // $state.find("span.countrycode").text(' (' + state.phone + ')');
-    $state.find("img").attr("src", baseUrl + "/" + state.flag.toLowerCase() + ".png");
-
-    return $state;
-};
 
 function formatCountryCode(state) {
     let country_code;
@@ -385,7 +364,6 @@ function loadData(type, id, additionalParam, dataMapper, additionalCallback) {
     
     loadSelectOption(url, config.selector, dataMapper, function() {
         apiCache[type] = response;
-        // console.log('config.selector: ', config.selector);
         if (config.container) $(config.container).slideDown();
         if (additionalCallback) additionalCallback();
     });
