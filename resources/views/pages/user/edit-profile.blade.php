@@ -274,7 +274,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="zoom-photo-modal" tabindex="-1" aria-labelledby="zoom-photo-label" aria-hidden="true">
+<div class="modal modal-lg fade" id="zoom-photo-modal" tabindex="-1" aria-labelledby="zoom-photo-label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -384,6 +384,7 @@
         successCallback = function(response) {
             hideLoading();
             $('#response').slideUp();
+            $('#response-password-container').empty();
             // close modal
             $('#update-password-modal').modal('hide');
             // reset form
@@ -412,18 +413,22 @@
             if (xhr.responseJSON && xhr.responseJSON.messages) {
                 let messages = xhr.responseJSON.messages;
 
-                let errorHtml = '<div class="alert alert-danger" role="alert">';
-                Object.keys(messages).forEach(function(field) {
-                    errorHtml += `${messages[field][0]}<br>`;
-                });
-                errorHtml += '</div>';
-
-                $('#response').html(errorHtml);
-                $('#response').slideDown();
-
                 $.each(messages, function (key, value) {
                     var fieldName = key;
                     var errorMessage = value[0]; // Get the first error message
+                    
+                    if (errorMessage) {
+                        // Field is invalid, remove is-valid class (if exists) and add is-invalid class
+                        $('#' + fieldName).removeClass('is-valid').addClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating').addClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.invalid-feedback').html(errorMessage);
+                    } else {
+                        // Field is valid, remove is-invalid class (if exists) and add is-valid class
+                        $('#' + fieldName).addClass('is-valid').removeClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating').removeClass('is-invalid');
+                        $('#' + fieldName).closest('.input-group').find('.form-floating input').addClass('is-valid');
+                        $('#' + fieldName).closest('.input-group').find('.invalid-feedback').html('');
+                    }
                 });
             }
         };

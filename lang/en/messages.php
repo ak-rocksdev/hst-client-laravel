@@ -89,6 +89,10 @@ return [
     "new_password" => "New Password",
     "confirm_new_password" => "Confirm New Password",
 
+    "profile" => "Profile",
+    "event_date" => "Event Date",
+    "event_location" => "Event Location",
+
     // response
     "response_password_updated" => "Your Password has been updated! Please login with your new password.",
     "response_login_failed" => "Login failed! Please check your email and password.",

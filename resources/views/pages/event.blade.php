@@ -93,16 +93,16 @@
 <div class="jumbotron jumbotronImage" style="background-image: url();"> </div>
 <div class="hero-image-container-gradient">
     @php
-        $file1 = '/competition/' . $event->ID_event . '/mbanner.png';
-        $file2 = '/competition/' . $event->ID_event . '/mbanner.jpg';
+        $file = '/competition/' . $event->ID_event . '/mbanner';
         $defaultFile = '/competition/default-banner.jpg';
 
-        if (Storage::disk('public')->exists($file1)) {
-            $bannerUrl = asset('storage' . $file1);
-        } else if (Storage::disk('public')->exists($file2)) {
-            $bannerUrl = asset('storage' . $file2);
-        } else{
-            $bannerUrl = asset('storage' . $defaultFile);
+        $bannerUrl = asset('storage' . $defaultFile);
+
+        foreach (['png', 'jpg'] as $extension) {
+            if (Storage::disk('public')->exists($file . '.' . $extension)) {
+                $bannerUrl = asset('storage' . $file . '.' . $extension);
+                break;
+            }
         }
     @endphp
     <img class="project-main-image" src="{{ $bannerUrl }}" alt="Event Poster">
@@ -110,8 +110,7 @@
         <div class="hero-text">
             <h1 class="text-white fw-bold">{{ $event->name }}</h1>
             <p>
-                <i class="fas fa-map-marker-alt me-2"></i>
-                {{ $event->location }}
+                <i class="fas fa-map-marker-alt me-2"></i>{{ $event->location }}
             </p>
             <a href="#detail" class="button button-grey">Detail<i class="fas fa-chevron-right ms-3"></i></a>
         </div>
@@ -126,10 +125,12 @@
                     <div class="eventInfo e_subTitle">
                         <div class="row">
                             <div class="col-md-6 col-12">
-                                <i class="far fa-clock me-2"></i> {{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }} | {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}
+                                <i class="far fa-clock me-2"></i> <span class="text-uppercase fw-bold">{{ __('messages.event_date') }}</span> 
+                                <div>{{ \Carbon\Carbon::parse($event->start_date)->format('d F Y') }}</div>
                             </div>
                             <div class="col-md-6 col-12">
-                                <i class="fas fa-map-marker-alt me-2"></i> {{ $event->location }}
+                                <i class="fas fa-map-marker-alt me-2"></i><span class="text-uppercase fw-bold">{{ __('messages.event_location') }}</span> 
+                                <div>{{ $event->location }}</div>
                             </div>
                         </div>
                     </div>

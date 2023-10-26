@@ -40,7 +40,8 @@ class UserPasswordUpdateRequest extends FormRequest
                     }
                 }
             ],
-            'new_password' => 'required|min:6|confirmed|different:old_password',
+            'new_password' => 'required|min:6|different:old_password',
+            'new_password_confirmation' => 'required|same:new_password',
         ];
     }
 
@@ -49,15 +50,6 @@ class UserPasswordUpdateRequest extends FormRequest
         $validated = parent::validated();
         $validated['new_password'] = Hash::make($validated['new_password']);
         return $validated;
-    }
-    
-    public function messages()
-    {
-        return [
-            'new_password.required' => __('The new password field is required.'),
-            'new_password.min' => __('The new password must be at least :min characters.'),
-            'new_password.confirmed' => __('The new password confirmation does not match.'),
-        ];
     }
 
     public function attributes(): array

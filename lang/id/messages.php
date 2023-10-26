@@ -90,6 +90,10 @@ return [
     "new_password" => "Kata Sandi Baru",
     "confirm_new_password" => "Konfirmasi Kata Sandi Baru",
 
+    "profile" => "Profil",
+    "event_date" => "Tanggal Event",
+    "event_location" => "Lokasi Event",
+
 
     // response
     "response_password_updated" => "Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.",

@@ -42,7 +42,7 @@
                 </li>
                 @if(Auth::guard('web')->check() != '1')
                 <li class="nav-item">
-                    <a class="nav-link fw-bold" href="{{ Request::is('/login') ? '' : '/login' }}">{{ __('messages.login') }}</a>
+                    <a class="nav-link fw-bold {{ Request::is('login') ? 'active' : '' }}" href="{{ Request::is('login') ? '#' : '/login' }}">{{ __('messages.login') }}</a>
                 </li>
                 @endif
             </ul>
@@ -51,11 +51,13 @@
         <!-- Language Dropdown Desktop -->
         @if(Auth::guard('web')->check() == '1')
         <li class="nav-item dropdown d-block">
-            <a class="d-flex align-items-center justify-content-evenly dropdown-toggle text-white {{ Request::is('profile') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="d-flex align-items-center justify-content-evenly dropdown-toggle text-white {{ Request::is('profile') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="far fa-user-circle fa-lg me-2"></i><span class="me-2">user</span>
-            </a>
+            </span>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/profile">Profile</a>
+                <a class="dropdown-item" href="{{ Request::is('profile') ? '#' : '/profile' }}">
+                    {{ __('messages.profile') }}
+                </a>
                 <a class="dropdown-item" href="{{ url('/logout') }}">
                     {{ __('messages.logout') }}
                 </a>
