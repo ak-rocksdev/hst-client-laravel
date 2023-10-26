@@ -101,6 +101,7 @@ return [
     'not_in' => 'Isian :attribute yang dipilih tidak valid.',
     'not_regex' => 'Format :attribute tidak valid.',
     'numeric' => 'Isian :attribute harus berupa angka.',
+    'old_password_is_incorrect' => 'Kata sandi lama salah.',
     'password' => 'Kata sandi salah.',
     'present' => 'Bidang :attribute harus ada.',
     'prohibited' => 'Bidang :attribute dilarang.',

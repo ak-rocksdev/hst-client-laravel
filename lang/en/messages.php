@@ -57,6 +57,8 @@ return [
     "country_code" => "Country Code",
     "locale" => "Language",
     "origin" => "Origin Info",
+    "update_photo" => "Update Photo",
+    "change_password" => "Change Password",
 
     "hyperscore_experience" => "Hyperscore Experience",
     "event_experience" => "Event Experience",
@@ -100,4 +102,5 @@ return [
     "response_success" => "Success!",
     "response_email_already_exist" => "The email is already registered! You need to login or reset your password.",
     "response_registration_success" => "Registration Success! Please do login to continue.",
+    "response_new_password_created" => "Password has been updated!",
 ];

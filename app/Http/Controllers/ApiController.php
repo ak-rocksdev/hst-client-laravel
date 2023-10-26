@@ -12,12 +12,18 @@ use App\Models\Games;
 use App\Models\Score;
 use App\Models\UserOrigin;
 
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
 use DB;
 
 use Auth;
 
 use App\Http\Requests\CreateContestantRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\UserPhotoProfileUpdateRequest;
+use App\Http\Requests\UserPasswordUpdateRequest;
 
 class ApiController extends Controller
 {
@@ -372,7 +378,6 @@ class ApiController extends Controller
 
     public function updateUserById(UserUpdateRequest $request) {
         $data = $request->validated();
-        // return dd($data);
 
         $user = User::where('ID_user', $data['user']['ID_user'])->first();
         if($user->locale != $data['user']['locale']) {
@@ -414,7 +419,6 @@ class ApiController extends Controller
             $userOrigin->indo_city_name = $data['user_origin']['indo_city_name'];
         }
         
-        // check if $userOrigin isDirty()
         if($userOrigin == null) {
             UserOrigin::create($data['user_origin']);
         } else {
@@ -445,6 +449,67 @@ class ApiController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $countryCodeDetail,
+            'code' => 200
+        ], 200);
+    }
+
+    //create file image upload for user photo profile, and write the file name to the database
+    public function uploadPhotoProfileByUserId(UserPhotoProfileUpdateRequest $request)
+    {
+        // Get the uploaded file
+        $file = $request->file('file');
+
+        // Define the upload directory to storage/user and file name
+        $uploadDir = 'storage/user/';
+        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
+        $uploadPath = $uploadDir . $fileName;
+
+        // return dd($uploadPath, $fileName, $file, $uploadDir);
+
+        // Store the file in the storage directory
+        // Storage::putFileAs($uploadDir, $file, $fileName);
+
+        $image = Image::make($file);
+        $image->resize(1000, 1000, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $image->save($uploadPath);
+
+        // if the file already exist, delete the previous file
+        $user = auth()->user();
+        if($user->photoFile != null) {
+            $filePath = storage_path('app/public/user/' . $user->photoFile);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+        }
+
+        // Insert the file name into the database
+        $user = auth()->user();
+        $user->photoFile = $fileName;
+        $user->save();
+
+        // Return a success response
+        return response()->json([
+            'messages' => ['Profile photo uploaded successfully.'],
+            'redirect' => '/profile/edit',
+        ]);
+    }
+
+    public function updatePasswordByUserId(UserPasswordUpdateRequest $request) {
+        $validated = $request->validated();
+
+        $user = auth()->user();
+        $user = User::where('ID_user', $user->ID_user)->first();
+        $user->new_password = $validated['new_password'];
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'messages' => [
+                '0' => __('messages.response_new_password_created')
+            ],
             'code' => 200
         ], 200);
     }

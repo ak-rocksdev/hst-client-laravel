@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function() {
     Route::prefix('/user')->group(function () {
         Route::put('/update',                       [ApiController::class, 'updateUserById']);
         Route::get('/origin/{user_id}',             [ApiController::class, 'getUserOriginByUserId']);
+        Route::post('/photo-profile/update',        [ApiController::class, 'uploadPhotoProfileByUserId']);
+        Route::put('/update-password',              [ApiController::class, 'updatePasswordByUserId']);
     });
 });
 

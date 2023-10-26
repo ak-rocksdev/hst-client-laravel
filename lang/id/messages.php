@@ -58,6 +58,8 @@ return [
     "country_code" => "Kode Negara",
     "locale" => "Bahasa",
     "origin" => "Informasi Asal",
+    "update_photo" => "Perbarui Foto",
+    "change_password" => "Ganti Kata Sandi",
 
     "hyperscore_experience" => "Pengalaman Hyperscore",
     "event_experience" => "Pengalaman Event",
@@ -102,4 +104,5 @@ return [
     "response_success" => "Berhasil!",
     "response_email_already_exist" => "Email yang anda tulis sudah terdaftar, Lakukan login! Jika lupa Kata Sandi, anda dapat melakukan Set Ulang di halaman login!",
     "response_registration_success" => "Anda telah berhasil mendaftar! Silakan masuk untuk melanjutkan.",
+    "response_new_password_created" => "Kata Sandi telah diperbarui!",
 ];

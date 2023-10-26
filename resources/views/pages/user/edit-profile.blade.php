@@ -13,9 +13,18 @@
 @section('extracss')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <style>
     .h-58px {
         height: 58px;
+    }
+    .dropzone {
+        text-align: center;
+        padding: 20px;
+        border: 3px dashed #aeaeae;
+        background-color: #fafafa;
+        color: #bdbdbd;
+        margin-bottom: 20px;
     }
 </style>
 @stop
@@ -65,8 +74,8 @@
                             <i class="fa-solid fa-magnifying-glass-plus"></i>
                         </span>
                     </div>
-                    <span class="btn btn-red fw-bold w-100 mb-2" data-bs-toggle="modal" data-bs-target="#update-photo-modal">Update Photo</span>
-                    <span class="btn btn-red fw-bold w-100" data-bs-toggle="modal" data-bs-target="#update-password-modal">Change Password</span>
+                    <span class="btn btn-red fw-bold w-100 mb-2" data-bs-toggle="modal" data-bs-target="#update-photo-modal">{{ __('messages.update_photo') }}</span>
+                    <span class="btn btn-red fw-bold w-100" data-bs-toggle="modal" data-bs-target="#update-password-modal">{{ __('messages.change_password') }}</span>
                 </div>
                 <div class="col-lg-9 col-md-8 col-12">
                     <div class="row justify-content-center">
@@ -138,7 +147,7 @@
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="input-group">
-                                <select class="form-select select2" name="country_code" id="country_code" aria-label="label select">
+                                <select class="form-select select2" name="country_code" id="country_code" aria-label="label select" style="width: 50%; !important">
                                     <option value="">{{ __('messages.country_code') }}</option>
                                 </select>
                                 <div class="form-floating" style="width: unset !important; min-width: 30%;">
@@ -212,11 +221,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <div id="response-photo-upload" style="display: none"></div>
+                <form action="/api/user/photo-profile/update" method="post" id="photo-upload-form" class="dropzone"></form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <span id="cancel-upload" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</span>
+                <span id="upload-photo" class="btn btn-primary">Upload</span>
             </div>
         </div>
     </div>
@@ -228,36 +238,39 @@
                 <h1 class="modal-title text-black fs-5" id="update-password-modal-label">{{ __('messages.update_password') }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="input-group has-validation mb-3">
-                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="old_password" id="old_password" placeholder="{{ __('messages.old_password') }}">
-                        <label for="old_password">{{ __('messages.old_password') }}</label>
-                    </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="input-group has-validation mb-3">
-                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="new_password" id="new_password" placeholder="{{ __('messages.new_password') }}">
-                        <label for="new_password">{{ __('messages.new_password') }}</label>
+            <form id="update-password-form" action="/api/user/update-password" method="put">
+                @csrf
+                <div class="modal-body">
+                    <div class="input-group has-validation mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="old_password" id="old_password" placeholder="{{ __('messages.old_password') }}">
+                            <label for="old_password">{{ __('messages.old_password') }}</label>
                         </div>
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="input-group has-validation mb-3">
-                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="confirm_new_password" id="confirm_new_password" placeholder="{{ __('messages.confirm_new_password') }}">
-                        <label for="confirm_new_password">{{ __('messages.confirm_new_password') }}</label>
+                        <div class="invalid-feedback"></div>
                     </div>
-                    <div class="invalid-feedback"></div>
+                    <div class="input-group has-validation mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="new_password" id="new_password" placeholder="{{ __('messages.new_password') }}">
+                            <label for="new_password">{{ __('messages.new_password') }}</label>
+                            </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="input-group has-validation mb-3">
+                        <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="new_password_confirmation" id="new_password_confirmation" placeholder="{{ __('messages.confirm_new_password') }}">
+                            <label for="new_password_confirmation">{{ __('messages.confirm_new_password') }}</label>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
-                <button type="button" class="btn btn-primary">{{ __('messages.update_password') }}</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.update_password') }}</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -284,8 +297,10 @@
     let currentUserPhoneCode = "{{ $user->country_code }}";
     let currentUserCountryCodeId = "{{ $user->country_code_id }}";
 </script>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('js/geo-location-options.js') }}"></script>
+<script src="{{ asset('js/image-profile-upload.js') }}"></script>
 <script>
     $('#form').on('submit', function(e) {
         showLoading();
@@ -306,7 +321,6 @@
         
         let method = $('#form').attr('method');
         let action = $('#form').attr('action');
-        console.log(form)
 
         successCallback = function(response) {
             hideLoading();
@@ -354,5 +368,75 @@
         api(action, method, form, successCallback, errorCallback)
     });
 </script>
+<script>
+    // when form with id="update-password-form" submitted do ajax call to submit form
+    $('#update-password-form').on('submit', function(e) {
+        showLoading();
+        e.preventDefault();
 
+        $('.invalid-feedback').html('');
+        $('.is-invalid').removeClass('is-invalid');
+
+        let form = $('#update-password-form').serialize();
+        let method = $('#update-password-form').attr('method');
+        let action = $('#update-password-form').attr('action');
+
+        successCallback = function(response) {
+            hideLoading();
+            $('#response').slideUp();
+            // close modal
+            $('#update-password-modal').modal('hide');
+            // reset form
+            $('#update-password-form').trigger('reset');
+
+            $('#response').empty();
+
+            let messages = response.messages;
+
+            let errorHtml = '<div class="alert alert-success" role="alert">';
+            Object.keys(messages).forEach(function(field) {
+                errorHtml += `${messages}<br>`;
+            });
+            errorHtml += '</div>';
+
+            $('#response').html(errorHtml);
+
+            slideDownResponse().then(() => {
+                $('#response').slideUp();
+            });
+        };
+        errorCallback = function (xhr) {
+            hideLoading();
+            $('#response').empty();
+
+            if (xhr.responseJSON && xhr.responseJSON.messages) {
+                let messages = xhr.responseJSON.messages;
+
+                let errorHtml = '<div class="alert alert-danger" role="alert">';
+                Object.keys(messages).forEach(function(field) {
+                    errorHtml += `${messages[field][0]}<br>`;
+                });
+                errorHtml += '</div>';
+
+                $('#response').html(errorHtml);
+                $('#response').slideDown();
+
+                $.each(messages, function (key, value) {
+                    var fieldName = key;
+                    var errorMessage = value[0]; // Get the first error message
+                });
+            }
+        };
+        api(action, method, form, successCallback, errorCallback)
+    });
+
+    function slideDownResponse() {
+        return new Promise((resolve) => {
+            $('#response').slideDown();
+            setTimeout(function() {
+                resolve();
+            }, 4000);
+        });
+    }
+</script>
 @stop
