@@ -3,6 +3,7 @@
 // lang/en/messages.php
 
 return [
+    // NAVBAR
     "home" => "Home",
     "events" => "Events",
     "about_us" => "About Us",

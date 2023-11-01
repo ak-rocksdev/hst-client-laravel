@@ -57,14 +57,17 @@
             <div class="row">
                 <div class="col-lg-3 col-md-4 col-12 mb-5">
                     @php
-                        $user->photoFile == null ? $file1 = '-' : $file1 = '/user/' . $user->photoFile;
+                        $file1 = $user->photoFile ? '/user/' . $user->photoFile : '-';
                         $file2 = '/user/' . $user->email . '.jpg';
                         $defaultFile = '/assets/img/avatar400x400.jpg';
-                        if (Storage::disk('public')->exists($file1)) {
+
+                        $storage = Storage::disk('public');
+
+                        if ($storage->exists($file1)) {
                             $profileUrl = asset('storage' . $file1);
-                        } else if (Storage::disk('public')->exists($file2)) {
+                        } elseif ($storage->exists($file2)) {
                             $profileUrl = asset('storage' . $file2);
-                        } else{
+                        } else {
                             $profileUrl = asset($defaultFile);
                         }
                     @endphp
