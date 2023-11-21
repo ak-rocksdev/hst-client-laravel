@@ -11,6 +11,8 @@ use App\Models\Contestant;
 use App\Models\Games;
 use App\Models\Score;
 use App\Models\UserOrigin;
+use App\Models\Participant;
+use App\Models\Judge;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
@@ -497,6 +499,133 @@ class ApiController extends Controller
         ]);
     }
 
+    // API to fill the participant table, after create the participant table on the database
+    public function fillParticipantTable()
+    {
+        $users = User::all();
+
+        foreach($users as $user) {
+            $competitions = Competition::all();
+            foreach($competitions as $competition) {
+                $contestant = Contestant::where('ID_user', $user->ID_user)
+                                            ->where('ID_competition', $competition->ID_competition)
+                                            ->where('attendance', 1)
+                                            ->first();
+                if($contestant != null) {
+                    Participant::create([
+                        'ID_user' => $user->ID_user,
+                        'ID_competition' => $competition->ID_competition,
+                        'created_at' => $contestant->insert_date,
+                        'created_by' => $user->ID_user,
+                        'updated_at' => now(),
+                        'updated_by' => $user->ID_user
+                    ]);
+                }
+
+                $judge = Judge::where('ID_user', $user->ID_user)
+                                            ->where('ID_competition', $competition->ID_competition)
+                                            ->first();
+
+                if($judge != null) {
+                    Participant::create([
+                        'ID_user' => $judge->ID_user,
+                        'ID_competition' => $competition->ID_competition,
+                        'created_at' => now(),
+                        'created_by' => $judge->ID_user,
+                        'updated_at' => now(),
+                        'updated_by' => $judge->ID_user
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'messages' => 'OK',
+            'code' => 200
+        ], 200);
+    }
+
+    public function getGamesByCompetitionIdAndType(Request $request) {
+        $id_competition = $request->id_competition;
+        $id_type = $request->id_type;
+
+        $games = Games::where('ID_competition', $id_competition)
+                        ->where('ID_type', $id_type)
+                        ->orderBy('ID_games')
+                        ->distinct()
+                        ->select('ID_type', 'ID_games')
+                        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $games,
+            'code' => 200
+        ], 200);
+    }
+
+    public function getRoundByCompetitionId(Request $request) {
+        $ID_competition = $request->id_competition;
+        $games = Games::where('ID_competition', $ID_competition)->orderBy('ID_type')->distinct()->select('ID_type')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $games,
+            'code' => 200
+        ], 200);
+    }
+    
+    public function getParticipantsByCompetitionId(Request $request) {
+        $id_type = $request->id_type;
+        $id_competition = $request->id_competition;
+        $id_games = $request->id_games;
+
+        $participants = Participant::leftJoin('contestant_list', 'participant.ID_user', 'contestant_list.ID_user')
+                        ->leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+                        ->leftJoin('user', 'contestant_list.ID_user', 'user.ID_user')
+                        ->leftJoin('user_origin', 'user.ID_user', 'user_origin.user_id')
+                        ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                        ->leftJoin('running_list', 'running_list.ID_contestant', 'contestant_list.ID_contestant')
+                        ->leftJoin('games', 'running_list.ID_games', 'games.ID_games')
+                        ->where('competition_list.ID_competition', $id_competition)
+                        ->where('running_list.ID_games', $id_games)
+                        ->where('contestant_list.attendance', 1)
+                        ->where('games.ID_type', $id_type)
+                        ->select(
+                            'event_list.name as event_name',
+                            'competition_list.level as competition_name',
+                            'games.ID_type as games_type',
+                            'running_list.ID_games',
+                            'running_list.increment',
+                            'running_list.groups',
+                            'running_list.status',
+                            'contestant_list.ID_competition',
+                            'contestant_list.ID_contestant',
+                            'contestant_list.ID_user',
+                            'user.full_name',
+                            'user.dateofbirth',
+                            DB::raw('FLOOR(DATEDIFF(CURRENT_DATE, user.dateofbirth) / 365) as age'),
+                            'user.email',
+                            'user.photoFile',
+                            'user.stance',
+                            'user_origin.country_id',
+                            'user_origin.country_name',
+                            'user_origin.state_name',
+                            'user_origin.city_name',
+                            'user_origin.indo_province_name',
+                            'user_origin.indo_city_name'
+                        )
+                        ->distinct()
+                        ->orderBy('running_list.increment')
+                        ->get();  // perlu di filter berdasarkan qual / final dan games
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $participants,
+            'code' => 200
+        ], 200);
+    }
+
     public function updatePasswordByUserId(UserPasswordUpdateRequest $request) {
         $validated = $request->validated();
 
@@ -512,5 +641,13 @@ class ApiController extends Controller
             ],
             'code' => 200
         ], 200);
+    }
+
+    public function checkPhotoProfileExists($filename)
+    {
+        $filePath = 'user/' . $filename;
+        $exists = Storage::disk('public')->exists($filePath);
+
+        return response()->json(['exists' => $exists]);
     }
 }

@@ -44,6 +44,11 @@ Route::group(['middleware' => 'language'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::get('/profile',                  [PageController::class, 'viewProfilePage']);
         Route::get('/profile/edit',             [PageController::class, 'viewEditProfilePage']);
+
+        Route::prefix('/event')->group(function () {
+            Route::get('/detail/{id}',          [PageController::class, 'viewMyEventDetailMemberPage']);
+            Route::get('/judge/{id}',           [PageController::class, 'viewEventDetailJudgePage']);
+        });
     });
 });
 

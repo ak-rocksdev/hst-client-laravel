@@ -94,6 +94,8 @@ return [
     "event_date" => "Event Date",
     "event_location" => "Event Location",
 
+    "no_selected_event_on_judge_message" => "<div class='p-3'>Please Select Category, Round,</br>and Attempt to show the participant!</div>",
+
     // response
     "response_password_updated" => "Your Password has been updated! Please login with your new password.",
     "response_login_failed" => "Login failed! Please check your email and password.",

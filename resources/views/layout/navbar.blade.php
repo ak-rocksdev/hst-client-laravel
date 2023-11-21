@@ -29,7 +29,14 @@
                     <a class="nav-link fw-bold {{ Request::is('/') ? 'active' : '' }}" href="{{ Request::is('/') ? '#' : '/' }}">{{ __('messages.home') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold {{ Request::is('events*') ? 'active' : '' }}" href="{{ Request::is('events*') ? '/#events' : '/#events' }}">{{ __('messages.events') }}</a>
+                    <!-- <a class="nav-link fw-bold {{ Request::is('events*') ? 'active' : '' }}"
+                        href="{{ Request::is('events*') ? '/#events' : '/#events' }}">
+                        {{ __('messages.events') }}
+                    </a> -->
+                    <a class="nav-link fw-bold {{ Request::is('event*') ? 'active' : '' }}"
+                        href="{{ Auth::check() ? (Request::is('events*') ? '#' : '/events') : (Request::is('event*') ? '/event/'.request('id').'#' : '/#events') }}">
+                        {{ __('messages.events') }}
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold" href="{{ Request::is('/') ? '#about' : '/#about' }}">{{ __('messages.about_us') }}</a>
@@ -50,6 +57,16 @@
 
         <!-- Language Dropdown Desktop -->
         @if(Auth::guard('web')->check() == '1')
+        <!-- Add <i class="fa-solid fa-bell"></i> -->
+        <div class="dropdown d-block me-3">
+            <button class="btn-dropdown" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-left slide-down" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="#">Notif 1</a></li>
+                <li><a class="dropdown-item" href="#">Notif 2</a></li>
+            </ul>
+        </div>
         <li class="nav-item dropdown d-block">
             <span class="d-flex align-items-center justify-content-evenly dropdown-toggle text-white {{ Request::is('profile') ? 'active' : '' }}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="far fa-user-circle fa-lg me-2"></i><span class="me-2">user</span>

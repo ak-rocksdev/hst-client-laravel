@@ -23178,6 +23178,10 @@ readers do not read off random characters that represent icons */
   background-color: var(--red-on-grey);
   color: var(--white) !important;
 }
+.btn-red-sm {
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem !important;
+}
 .btn-yellow {
   background-color: var(--yellow);
   color: var(--black) !important;
@@ -23394,6 +23398,7 @@ body {
   position: relative;
   overflow: hidden;
   padding: 0;
+  max-width: 200px;
 }
 .event-container-card .square-wrapper {
   position: relative;
@@ -23415,6 +23420,12 @@ body {
   font-weight: 700;
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+}
+
+.btn-group .btn-filter.checked {
+  background-color: var(--red) !important;
+  color: var(--white) !important;
+  border: 1px solid var(--red) !important;
 }
 
 .bd-callout {
@@ -23682,6 +23693,22 @@ body {
      object-fit: cover;
   width: 100%;
   height: 100%;
+}
+
+.user-photo-thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+table.table.table-dark .group-header {
+  --bs-table-bg-state: var(--red) !important;
+}
+
+#participant-table tbody tr {
+  vertical-align: middle;
 }
 
 /*ALL*/

@@ -46,11 +46,43 @@ ALTER TABLE `user` MODIFY COLUMN phone varchar(20) CHARACTER SET utf8mb4 COLLATE
 ALTER TABLE `event_list` ADD max_join_competition tinyint(1) DEFAULT 1 NOT NULL AFTER registration_type;
 ALTER TABLE `event_list` ADD slug tinyint(1) DEFAULT 1 NOT NULL AFTER short_link; -- BELUM
 
+-- ===================================================================================================
+-- Table Judge_list
+
+-- TAMBAH COLUMN:
+
+ALTER TABLE judge_list  
+    ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT NULL,
+    ADD COLUMN `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    ADD COLUMN `updated_by` VARCHAR(36) NULL DEFAULT NULL;
+
+-- ===================================================================================================
+-- Table running_list
+
+-- TAMBAH COLUMN:
+
+ALTER TABLE running_list  
+    ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT NULL,
+    ADD COLUMN `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    ADD COLUMN `updated_by` VARCHAR(36) NULL DEFAULT NULL;
 
 
+-- ===================================================================================================
+-- Table participant (New)
 
-
-
+CREATE TABLE `participant` (
+    `id` INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ID_user` INT(11) NOT NULL,
+    `ID_competition` INT(11) NOT NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `updated_by` VARCHAR(36) NULL DEFAULT NULL,
+    FOREIGN KEY (`ID_user`) REFERENCES `user`(`ID_user`),
+    FOREIGN KEY (`ID_competition`) REFERENCES `competition_list`(`ID_competition`)
+);
 
 
 

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,12 @@ use App\Http\Controllers\Auth\AuthController;
 
 Route::middleware(['auth'])->group(function() {
     Route::prefix('/event')->group(function () {
-        Route::get('/confirmation',             [ApiController::class, 'doConfirmCompetitionOnRegister']);
-        Route::post('/register',                [ApiController::class, 'registerContestantByCompetitionId']);
-        Route::get('/check-status-by-user',     [ApiController::class, 'getEventStatusByUserId']);
+        Route::get('/confirmation',                 [ApiController::class, 'doConfirmCompetitionOnRegister']);
+        Route::post('/register',                    [ApiController::class, 'registerContestantByCompetitionId']);
+        Route::get('/check-status-by-user',         [ApiController::class, 'getEventStatusByUserId']);
+        Route::get('/get-games',                    [ApiController::class, 'getGamesByCompetitionIdAndType']);
+        Route::get('/get-rounds',                   [ApiController::class, 'getRoundByCompetitionId']);
+        Route::get('/get-participants',             [ApiController::class, 'getParticipantsByCompetitionId']);
     });
     Route::prefix('/user')->group(function () {
         Route::put('/update',                       [ApiController::class, 'updateUserById']);
@@ -33,6 +37,11 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/photo-profile/update',        [ApiController::class, 'uploadPhotoProfileByUserId']);
         Route::put('/update-password',              [ApiController::class, 'updatePasswordByUserId']);
     });
+    Route::get('/check-photo-exists/{filename}',    [ApiController::class, 'checkPhotoProfileExists']);
+    // Route::middleware(['role:member'])->group(function () { // Only used for first time
+    //     Route::get('/assign-roles-all-users',           [PermissionController::class, 'assignRolesToAllUsers']);
+    // });
+    Route::get('/fill-participant-table', [ApiController::class, 'fillParticipantTable']);
 });
 
 Route::prefix('/event')->group(function () {

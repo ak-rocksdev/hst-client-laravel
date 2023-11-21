@@ -32,11 +32,32 @@ class PageController extends Controller
 
     public function viewEventsPage()
     {
-        $events = Event::where('type', 'competition')
-                        ->orderByDesc('end_date')
-                        ->get();
+        $auth = Auth::guard('web');
+        $view = $auth->check() ? 'pages.user.events' : 'pages.events';
+        $query = Event::where('type', 'competition')->latest('end_date');
 
-        return view('pages.events', compact('events'));
+        if($auth->check()) {
+            // get filter request
+            $filter = request()->query('filter');
+            // if filter is 'all', get all events. else, get the events that the user has joined
+
+            if($filter == 'all' || $filter == null) {
+                $events = Event::where('type', 'competition')->latest('end_date')->get();
+            } else {
+                $events = Event::select('event_list.*')
+                                ->leftJoin('competition_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                                ->leftJoin('participant', 'participant.ID_competition', '=', 'competition_list.ID_competition')
+                                ->where('participant.ID_user', $auth->user()->ID_user)
+                                ->where('event_list.type', 'competition')
+                                ->orderByDesc('event_list.start_date')
+                                ->distinct()
+                                ->get();
+            }
+        } else {
+            $events = $query->get();
+        }
+
+        return view($view, compact('events'));
     }
 
     public function viewEventPageById($id)
@@ -54,6 +75,60 @@ class PageController extends Controller
         $today = new \DateTime(); // Current date and time
 
         $isRegistrationOpen = $today >= $startRegistration && $today <= $endRegistration;
+
+        $competitions = Competition::select('competition_list.*', 'sport.name as sports')
+            ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+            ->where('ID_event', $id)
+            ->orderBy('sport')
+            ->get();
+
+        $groupedCompetitions = [];
+        foreach ($competitions as $competition) {
+            if (!isset($groupedCompetitions[$competition->sports])) {
+                $groupedCompetitions[$competition->sports] = [
+                    'sports' => $competition->sports,
+                    'levels' => [],
+                ];
+            }
+            
+            $groupedCompetitions[$competition->sports]['levels'][] = $competition->level;
+        }
+        
+        $groupedCompetitions = array_values($groupedCompetitions);
+        
+        $sports = Competition::select('sport.name as sports')
+            ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+            ->where('ID_event', $id)
+            ->distinct()
+            ->select('sport.*')
+            ->get();
+
+        $contestants = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+                        ->leftJoin('user', 'contestant_list.ID_user', 'user.ID_user')
+                        ->leftJoin('user_origin', 'user.ID_user', 'user_origin.user_id')
+                        ->leftJoin('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+                        ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                        ->where('competition_list.ID_event', $id)
+                        ->select('contestant_list.*',
+                            'competition_list.level as competition_name',
+                            'sport.name as sport_name',
+                            'event_list.name as event_name',
+                            'user.full_name', 
+                            'user_origin.indo_province_name',
+                            'user_origin.indo_city_name',
+                            'user_origin.state_name',
+                            'user_origin.country_name',
+                        )
+                        ->orderByDesc('sport.name')
+                        ->orderByDesc('contestant_list.created_at')
+                        ->get();
+
+        return view('pages.event', compact('event', 'competitions', 'sports', 'contestants', 'isRegistrationOpen', 'groupedCompetitions'));
+    }
+
+    public function viewMyEventDetailMemberPage($id)
+    {
+        $event = Event::find($id);
 
         $competitions = Competition::select('competition_list.*', 'sport.name as sports')
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
@@ -103,7 +178,44 @@ class PageController extends Controller
                         ->orderByDesc('contestant_list.created_at')
                         ->get();
 
-        return view('pages.event', compact('event', 'competitions', 'sports', 'contestants', 'isRegistrationOpen', 'groupedCompetitions'));
+        return view('pages.user.event-detail-member', compact('event', 'competitions', 'sports', 'contestants', 'groupedCompetitions'));
+    }
+
+    public function viewEventDetailJudgePage($id)
+    {
+        $event = Event::find($id);
+        $loggedInUserId = Auth::guard('web')->user()->ID_user; 
+        $competitions = Competition::select('competition_list.*', 'sport.name as sports', 'judge_list.ID_user')
+                                    ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+                                    ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                                    ->leftJoin('judge_list', 'competition_list.ID_competition', '=', 'judge_list.ID_competition')
+                                    ->where('event_list.ID_event', $id)
+                                    ->where('judge_list.ID_user', $loggedInUserId)
+                                    ->orderBy('sport')
+                                    ->get();
+        
+        // $contestants = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+        //                         ->leftJoin('user', 'contestant_list.ID_user', 'user.ID_user')
+        //                         ->leftJoin('user_origin', 'user.ID_user', 'user_origin.user_id')
+        //                         ->leftJoin('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+        //                         ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+        //                         ->leftJoin('judge_list', 'competition_list.ID_competition', '=', 'judge_list.ID_competition')
+        //                         ->where('competition_list.ID_competition', $id)
+        //                         ->select('contestant_list.*',
+        //                             'competition_list.level as competition_name',
+        //                             'sport.name as sport_name',
+        //                             'event_list.name as event_name',
+        //                             'user.full_name', 
+        //                             'user_origin.indo_province_name',
+        //                             'user_origin.indo_city_name',
+        //                             'user_origin.state_name',
+        //                             'user_origin.country_name',
+        //                         )
+        //                         ->orderByDesc('sport.name')
+        //                         ->orderByDesc('contestant_list.created_at')
+        //                         ->get();
+        //                         return dd($contestants);
+        return view('pages.user.judge-home', compact('event', 'competitions'));
     }
 
     public function viewUserLoginPage(Request $request){

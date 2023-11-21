@@ -5,7 +5,7 @@
 return [
     // NAVBAR
     "home" => "Beranda",
-    "events" => "Acara",
+    "events" => "Event",
     "about_us" => "Tentang Kami",
     "services" => "Layanan",
     "contact_us" => "Hubungi Kami",
@@ -93,6 +93,8 @@ return [
     "profile" => "Profil",
     "event_date" => "Tanggal Event",
     "event_location" => "Lokasi Event",
+
+    "no_selected_event_on_judge_message" => "<div class='p-3'>Silakan Pilih Kategori, Ronde/Babak,</br>dan Run untuk menampilkan peserta!</div>",
 
 
     // response
