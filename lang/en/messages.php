@@ -95,6 +95,12 @@ return [
     "event_location" => "Event Location",
 
     "no_selected_event_on_judge_message" => "<div class='p-3'>Please Select Category, Round,</br>and Attempt to show the participant!</div>",
+    "verify_score" => "Verify Score",
+    "submit_score" => "Submit Score",
+    "back" => "Back",
+    "next_player" => "Next Player",
+    "cancel" => "Cancel",
+    "question_verify_score" => "Are you sure you want to verify this score?",
 
     // response
     "response_password_updated" => "Your Password has been updated! Please login with your new password.",
@@ -110,4 +116,7 @@ return [
     "response_email_already_exist" => "The email is already registered! You need to login or reset your password.",
     "response_registration_success" => "Registration Success! Please do login to continue.",
     "response_new_password_created" => "Password has been updated!",
+    "response_score_is_set" => "Score is Successfully Set!",
+    "response_score_is_verified" => "Score is Successfully Verified!",
+    "response_score_is_already_verified" => "Score is Already Verified!",
 ];

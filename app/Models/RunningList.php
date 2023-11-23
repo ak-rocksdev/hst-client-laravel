@@ -13,7 +13,6 @@ class RunningList extends Model
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->isActive = 1;
             $model->created_by = 1; // NOTE: Should be replaced by Auth->ID_user 
         });
     }

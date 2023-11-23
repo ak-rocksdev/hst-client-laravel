@@ -95,7 +95,12 @@ return [
     "event_location" => "Lokasi Event",
 
     "no_selected_event_on_judge_message" => "<div class='p-3'>Silakan Pilih Kategori, Ronde/Babak,</br>dan Run untuk menampilkan peserta!</div>",
-
+    "verify_score" => "Verifikasi Skor",
+    "submit_score" => "Submit Skor",
+    "back" => "Kembali",
+    "next_player" => "Peserta Berikutnya",
+    "cancel" => "Batal",
+    "question_verify_score" => "Apakah anda yakin ingin memverifikasi skor ini?",
 
     // response
     "response_password_updated" => "Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.",
@@ -111,4 +116,7 @@ return [
     "response_email_already_exist" => "Email yang anda tulis sudah terdaftar, Lakukan login! Jika lupa Kata Sandi, anda dapat melakukan Set Ulang di halaman login!",
     "response_registration_success" => "Anda telah berhasil mendaftar! Silakan masuk untuk melanjutkan.",
     "response_new_password_created" => "Kata Sandi telah diperbarui!",
+    "response_score_is_set" => "Skor Berhasil Di Set!",
+    "response_score_is_verified" => "Verifikasi Berhasil!",
+    "response_score_is_already_verified" => "Skor Sudah Di Verifikasi!",
 ];

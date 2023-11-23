@@ -70,6 +70,18 @@ ALTER TABLE running_list
 
 
 -- ===================================================================================================
+-- Table score_list
+
+-- TAMBAH COLUMN:
+
+ALTER TABLE score_list  
+    ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT NULL,
+    ADD COLUMN `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    ADD COLUMN `updated_by` VARCHAR(36) NULL DEFAULT NULL;
+
+
+-- ===================================================================================================
 -- Table participant (New)
 
 CREATE TABLE `participant` (

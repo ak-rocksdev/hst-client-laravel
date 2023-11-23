@@ -37,11 +37,15 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/photo-profile/update',        [ApiController::class, 'uploadPhotoProfileByUserId']);
         Route::put('/update-password',              [ApiController::class, 'updatePasswordByUserId']);
     });
-    Route::get('/check-photo-exists/{filename}',    [ApiController::class, 'checkPhotoProfileExists']);
+    Route::get('/fill-participant-table',           [ApiController::class, 'fillParticipantTable']);
+    Route::prefix('/score')->group(function () {
+        Route::get('/get',                          [ApiController::class, 'getContestantScoreByJudgeIdOnCurrentGames']);
+        Route::post('/set',                         [ApiController::class, 'setContestantScoreByJudgeIdOnCurrentGames']);
+        Route::post('/verify',                      [ApiController::class, 'verifyScoreByContestantId']);
+    });
     // Route::middleware(['role:member'])->group(function () { // Only used for first time
     //     Route::get('/assign-roles-all-users',           [PermissionController::class, 'assignRolesToAllUsers']);
     // });
-    Route::get('/fill-participant-table', [ApiController::class, 'fillParticipantTable']);
 });
 
 Route::prefix('/event')->group(function () {

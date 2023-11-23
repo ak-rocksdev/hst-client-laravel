@@ -8,6 +8,8 @@
     --dark: #1e2024;
     --swiper-pagination-color: var(--red) !important;
     --yellow: #ffcc00;
+    --tosca: #008f8f;
+    --toscaHover: #00b3b3;
 
     --bs-info-text-emphasis: #055160;
     --bs-info-border-subtle: #9eeaf9;
@@ -50,6 +52,19 @@
         font-size: 1.5rem;
         &:hover {
             background-color: #111213;
+            color: var(--white) !important;
+        }
+    }
+
+    &-tosca {
+        background-color: var(--tosca);
+        font-size: 1.5rem;
+        &:hover {
+            background-color: var(--toscaHover);
+            color: var(--white) !important;
+        }
+        &:active {
+            background-color: var(--toscaHover) !important;
             color: var(--white) !important;
         }
     }

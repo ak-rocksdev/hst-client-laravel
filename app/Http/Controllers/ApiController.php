@@ -26,6 +26,7 @@ use App\Http\Requests\CreateContestantRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UserPhotoProfileUpdateRequest;
 use App\Http\Requests\UserPasswordUpdateRequest;
+use App\Http\Requests\VerifyContestantScoreRequest;
 
 class ApiController extends Controller
 {
@@ -599,6 +600,7 @@ class ApiController extends Controller
                             'running_list.increment',
                             'running_list.groups',
                             'running_list.status',
+                            'running_list.ID_running',
                             'contestant_list.ID_competition',
                             'contestant_list.ID_contestant',
                             'contestant_list.ID_user',
@@ -643,11 +645,84 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function checkPhotoProfileExists($filename)
-    {
-        $filePath = 'user/' . $filename;
-        $exists = Storage::disk('public')->exists($filePath);
+    public function getContestantScoreByJudgeIdOnCurrentGames(Request $request) {
+        $score = Score::where('ID_contestant', $request->ID_contestant)
+                        ->where('ID_games', $request->ID_games)
+                        ->where('ID_judge', $request->ID_judge)
+                        ->first();
 
-        return response()->json(['exists' => $exists]);
+        return response()->json([
+            'status' => 'success',
+            'data' => $score,
+            'code' => 200
+        ], 200);
+    }
+
+    public function setContestantScoreByJudgeIdOnCurrentGames(Request $request){
+        // check if score where ID_contestant, ID_games, ID_judge = 0 is exist
+        $score = Score::where('ID_contestant', $request->ID_contestant)
+                        ->where('ID_games', $request->ID_games)
+                        ->where('ID_judge', 0)
+                        ->first();
+
+        if($score == null) {
+            $score = Score::where('ID_contestant', $request->ID_contestant)
+                            ->where('ID_games', $request->ID_games)
+                            ->where('ID_judge', $request->ID_judge)
+                            ->first();
+            if($score == null) {
+                Score::create([
+                    'ID_contestant' => $request->ID_contestant,
+                    'ID_games' => $request->ID_games,
+                    'ID_judge' => $request->ID_judge,
+                    'score' => $request->score,
+                    'fixed' => 1
+                ]);
+            } else {
+                $score->score = $request->score;
+                $score->fixed = 1;
+                $score->save();
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'messages' => [
+                    '0' => __('messages.response_score_is_set')
+                ],
+                'code' => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    '0' => 'Score is Already Submitted by The Head Judge'
+                ],
+                'code' => 400
+            ], 400);
+        }
+    }
+
+    public function verifyScoreByContestantId(VerifyContestantScoreRequest $request) {
+        // validate if score from all judges is already set - formRequest
+        // validate if verified score is already exist - formRequest
+        // calculate the average score from DB selected system
+        // create database record with ID_judge = 0, score from the calculation, fixed value = 1, and current ID_contestant
+        // return response success
+
+        return response()->json([
+            'status' => 'success',
+            'messages' => [
+                '0' => __('messages.response_score_is_verified')
+            ],
+            'code' => 200
+        ], 200);
+    }
+
+    private function calculateAverageScore($scores) {
+        $sum = 0;
+        foreach($scores as $score) {
+            $sum += $score;
+        }
+        return $sum / count($scores);
     }
 }

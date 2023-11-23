@@ -54,8 +54,8 @@
         <div class="col-md-12">
             <label for="competition" class="form-label me-3 text-white fw-bold text-uppercase">Select Category</label>
             <div id="filter-btn-group" class="btn-group btn-group-container" role="group" aria-label="Radio toggle button group">
-                <input type="radio" class="btn-check" name="competition" id="competition-0" autocomplete="off" value="0" checked>
-                <label class="btn btn-white fw-bold" for="competition-0">All</label>
+                <!-- <input type="radio" class="btn-check" name="competition" id="competition-0" autocomplete="off" value="0" checked>
+                <label class="btn btn-white fw-bold" for="competition-0">All</label> -->
                 @foreach ($competitions as $competition)
                 <input type="radio" class="btn-check" name="competition" id="competition-{{ $competition->ID_competition }}" autocomplete="off" value="{{ $competition->ID_competition }}">
                 <label class="btn btn-white fw-bold" for="competition-{{ $competition->ID_competition }}">{{ $competition->level }}</label>
@@ -117,7 +117,6 @@
 
 @section('script')
 <script>
-    // if doc ready append to participant table
     $(document).ready(function() {
         let element = `<tr>
                     <td colspan="4" class="text-center">
@@ -137,6 +136,7 @@
                 </tr>`;
         $('#participant-table-body').append(element);
     }
+
     $('#filter-btn-group input[type="radio"]').on('change', function() {
         showLoading();
         var id_competition = $(this).val();
@@ -166,7 +166,6 @@
             var id_games = $(this).val();
 
             loadParticipantByIdGames(id_competition, id_games, id_type);
-            // loadGamesByIdCompetition(id_competition, loadRunByIdCompetitionAndType)
         });
     }
 
@@ -180,7 +179,7 @@
         };
         let successCallback = function(response) {
             if(response) {
-                $('#run-filter-container').show();
+                $('#run-filter-container').slideDown();
                 let data = response.data;
                 // append the data
 
@@ -233,7 +232,7 @@
         };
         let successCallback = function(response) {
             if(response) {
-                $('#round-filter-container').show();
+                $('#round-filter-container').slideDown();
                 let data = response.data;
                 // append the data
                 let filterTypeBtnGroup = $('#round-options');
@@ -275,78 +274,7 @@
         api(url, method, data, successCallback, errorCallback);
     }
 
-    function loadGamesByIdCompetition(id_competition, callback) {
-        showLoading();
-        let participantTableBody = $('#participant-table-body');
-        participantTableBody.empty();
-
-        let action = '/api/event/get-games/' + id_competition;
-        let method = 'GET';
-        data = null;
-        successCallback = function(response) {
-            hideLoading();
-            if(response) {
-                $('#round-filter-container').show();
-                $('#run-filter-container').show();
-                let data = response.data;
-                // append the data
-                let filterTypeBtnGroup = $('#round-options');
-                let filterGameTypeOptions = $('#run-type-option');
-                filterTypeBtnGroup.empty();
-                filterGameTypeOptions.empty();
-                let gameNumber = 1;
-                data.forEach(function(game) {
-                    // if game ID_type = 1 print Qualification, ID_type = 3 print Final
-                    // make increment for the game number from ${game.ID_games}
-
-                    filterTypeBtnGroup.append(`
-                        <input type="radio" class="btn-check" name="round-type" id="type-${game.ID_type}" autocomplete="off" data-id-games="${game.ID_games}" value="${game.ID_type}">
-                        <label class="btn btn-white fw-bold" for="round-type-${game.ID_type}">
-                            ${game.ID_type == 1 ? 'Qualification' : 'Final'} - ${gameNumber++}
-                        </label>
-                    `);
-
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
-
-                gameNumber = 1;
-                data.forEach(function(game) {
-                    filterGameTypeOptions.append(`
-                        <input type="radio" class="btn-check" name="type" id="type-${game.ID_type}" autocomplete="off" value="${game.ID_games}">
-                        <label class="btn btn-white fw-bold" for="type-${game.ID_type}">
-                            Run - ${gameNumber++}
-                        </label>
-                    `);
-                });
-            }
-        };
-        errorCallback = function (xhr) {
-            hideLoading();
-            let response = xhr.responseJSON.messages;
-            let messages = ''
-            Object.keys(response).forEach(function(field) {
-                messages += `<span class="fs-5 text-black"> ${response[field]} </span>`;
-            });
-            Swal.fire({
-                title: '<strong>{{ __("messages.response_failed") }}</strong>',
-                icon: 'error',
-                html: '<div>' + messages + '</div>',
-                showCloseButton: true,
-                showCancelButton: false,
-                focusConfirm: false,
-                confirmButtonText: '<i class="fas fa-times me-2"></i> {{ __("messages.close") }}',
-                confirmButtonAriaLabel: 'Thumbs up, great!',
-            }).then((result) => {
-                $('.modal').modal('hide');
-            })
-            console.log('error', xhr.responseJSON)
-        };
-        api(action, method, data, successCallback, errorCallback);
-    }
-
-    function loadParticipantByIdGames(id_competition, id_games, id_type) { // NOTE: separate by group if available
+    function loadParticipantByIdGames(id_competition, id_games, id_type) {
         showLoading();
         let action = '/api/event/get-participants';
         let method = 'GET';
@@ -402,7 +330,7 @@
                                 ${origin}
                             </td>
                             <td class="text-center">
-                                <button class="btn btn-red btn-red-sm" onclick="play(${participant.ID_contestant})">
+                                <button class="btn btn-red btn-red-sm" onclick="play(${participant.ID_running})">
                                     <i class="fas fa-play me-2"></i>
                                     Play
                                 </button>
@@ -434,6 +362,10 @@
             console.log('error', xhr.responseJSON)
         };
         api(action, method, data, successCallback, errorCallback);
+    }
+
+    function play(runningId) {
+        window.location.href = '/event/judge/scoring/' + runningId;
     }
 
     async function checkFileExists(filename) {

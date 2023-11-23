@@ -12,6 +12,7 @@ use App\Models\Contestant;
 use App\Models\Games;
 use App\Models\Score;
 use App\Models\CompetitionType;
+use App\Models\Judge;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -216,6 +217,41 @@ class PageController extends Controller
         //                         ->get();
         //                         return dd($contestants);
         return view('pages.user.judge-home', compact('event', 'competitions'));
+    }
+
+    public function viewJudgeScoringPage($runningId)
+    {
+        $loggedInUserId = Auth::guard('web')->user();
+        
+        $contestant = DB::table('running_list')
+                        ->leftJoin('contestant_list', 'running_list.ID_contestant', '=', 'contestant_list.ID_contestant')
+                        ->leftJoin('competition_list', 'contestant_list.ID_competition', '=', 'competition_list.ID_competition')
+                        ->leftJoin('user', 'contestant_list.ID_user', '=', 'user.ID_user')
+                        ->leftJoin('user_origin', 'user.ID_user', '=', 'user_origin.user_id')
+                        ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                        ->leftJoin('games', 'running_list.ID_games', '=', 'games.ID_games')
+                        ->where('running_list.ID_running', $runningId)
+                        // ->where('running_list.status', 0)
+                        ->select(
+                            'running_list.*',
+                            DB::raw('CASE WHEN games.ID_type = 1 THEN "Qualification" WHEN games.ID_type = 2 THEN "Semi-final" WHEN games.ID_type = 3 THEN "Final" END AS round_name'),
+                            'event_list.name as event_name',
+                            'contestant_list.*',
+                            'competition_list.level as competition_level',
+                            'competition_list.ID_event',
+                            'user.*',
+                            'user_origin.*',
+                            DB::raw('TIMESTAMPDIFF(YEAR, user.dateofbirth, CURDATE()) AS age')
+                        )
+                        ->first();
+        
+        // return dd($contestant);
+        $judge = Judge::leftJoin('user', 'judge_list.ID_user', '=', 'user.ID_user')
+                        ->where('judge_list.ID_user', $loggedInUserId->ID_user)
+                        ->where('judge_list.ID_competition', $contestant->ID_competition)
+                        ->first();
+
+        return view('pages.user.judge-scoring', compact('contestant', 'judge'));
     }
 
     public function viewUserLoginPage(Request $request){
