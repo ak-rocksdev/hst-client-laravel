@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Competition;
@@ -13,6 +14,7 @@ use App\Models\Games;
 use App\Models\Score;
 use App\Models\CompetitionType;
 use App\Models\Judge;
+use App\Models\RunningList;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -130,6 +132,7 @@ class PageController extends Controller
     public function viewMyEventDetailMemberPage($id)
     {
         $event = Event::find($id);
+        $auth = Auth::guard('web');
 
         $competitions = Competition::select('competition_list.*', 'sport.name as sports')
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
@@ -150,7 +153,6 @@ class PageController extends Controller
         }
         
         $groupedCompetitions = array_values($groupedCompetitions);
-        // return dd($groupedCompetitions);
         
         $sports = Competition::select('sport.name as sports')
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
@@ -179,13 +181,26 @@ class PageController extends Controller
                         ->orderByDesc('contestant_list.created_at')
                         ->get();
 
-        return view('pages.user.event-detail-member', compact('event', 'competitions', 'sports', 'contestants', 'groupedCompetitions'));
+        $isJudgeForThisEvent = Judge::leftJoin('competition_list', 'judge_list.ID_competition', '=', 'competition_list.ID_competition')
+                                    ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                                    ->where('judge_list.ID_user', $auth->user()->ID_user)
+                                    ->where('event_list.ID_event', $id)
+                                    ->exists();
+        return view('pages.user.event-detail-member', compact('event', 'competitions', 'sports', 'contestants', 'groupedCompetitions', 'isJudgeForThisEvent'));
     }
 
     public function viewEventDetailJudgePage($id)
     {
         $event = Event::find($id);
         $loggedInUserId = Auth::guard('web')->user()->ID_user; 
+        $isJudgeForThisEvent = Judge::leftJoin('competition_list', 'judge_list.ID_competition', '=', 'competition_list.ID_competition')
+                                    ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                                    ->where('judge_list.ID_user', $loggedInUserId)
+                                    ->where('event_list.ID_event', $id)
+                                    ->exists();
+        if(!$isJudgeForThisEvent) {
+            return abort(404);
+        }
         $competitions = Competition::select('competition_list.*', 'sport.name as sports', 'judge_list.ID_user')
                                     ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
                                     ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
@@ -240,18 +255,110 @@ class PageController extends Controller
                             'competition_list.level as competition_level',
                             'competition_list.ID_event',
                             'user.*',
+                            DB::raw('IF(user.nick_name IS NULL, SUBSTRING_INDEX(user.full_name, " ", 1), user.nick_name) as nick_name'),
                             'user_origin.*',
                             DB::raw('TIMESTAMPDIFF(YEAR, user.dateofbirth, CURDATE()) AS age')
                         )
                         ->first();
+
+        // Get the next running id
+        // get type from current games, put "where" by type.
+        $IDtypeFromCurrentGames = Games::select('ID_type')
+                                            ->where('ID_games', $contestant->ID_games)
+                                            ->first();
+
+
+        $nextRunningId = RunningList::leftJoin('games', 'running_list.ID_games', 'games.ID_games')
+                            ->where('ID_running', '>', $runningId)
+                            ->where('running_list.ID_games', $contestant->ID_games)
+                            ->where('games.ID_type', $IDtypeFromCurrentGames->ID_type)
+                            ->orderBy('running_list.increment')
+                            ->orderBy('running_list.ID_running')
+                            ->first();
+                            // return dd($nextRunningId);
+        // do make the group value first on the database, to be used for the query above
         
-        // return dd($contestant);
         $judge = Judge::leftJoin('user', 'judge_list.ID_user', '=', 'user.ID_user')
                         ->where('judge_list.ID_user', $loggedInUserId->ID_user)
                         ->where('judge_list.ID_competition', $contestant->ID_competition)
                         ->first();
+        $isHeadJudge = $judge->isHeadJudge == 1 ? true : false;
 
-        return view('pages.user.judge-scoring', compact('contestant', 'judge'));
+        return view('pages.user.judge-scoring', compact('contestant', 'judge', 'isHeadJudge', 'nextRunningId'));
+    }
+
+    public function viewCheckInPage($id)
+    {
+        $event = Event::find($id);
+        $auth = Auth::guard('web');
+
+        $competitions = Competition::select('competition_list.*', 'sport.name as sports')
+            ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+            ->where('ID_event', $id)
+            ->orderBy('sport')
+            ->get();
+
+        // get competition list, grouped by competition list level, with the contestant list for each competition
+
+        $competitionList = Competition::leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                ->leftJoin('contestant_list', 'competition_list.ID_competition', '=', 'contestant_list.ID_competition')
+                ->leftJoin('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+                ->where('event_list.ID_event', $id)
+                ->groupBy('sport.name', 'competition_list.level', 'competition_list.ID_competition')
+                ->orderBy('competition_list.ID_competition')
+                ->select(
+                    'sport.name as sports',
+                    'competition_list.level',
+                    'competition_list.ID_competition',
+                    DB::raw('COUNT(CASE WHEN contestant_list.attendance = 1 THEN 1 END) as total_attendance'),
+                    DB::raw('COUNT(contestant_list.ID_contestant) as total_participant')
+                )
+                ->get();
+
+        
+        $groupedCompetitions = [];
+        foreach ($competitionList as $competition) {
+            if (!isset($groupedCompetitions[$competition->sports])) {
+                $groupedCompetitions[$competition->sports] = [
+                    'sport' => $competition->sports,
+                    'data' => [],
+                ];
+            }
+            
+            $groupedCompetitions[$competition->sports]['data'][] = $competition;
+        }
+        
+        $groupedCompetitions = array_values($groupedCompetitions);
+
+        // return dd($groupedCompetitions);
+        // $sports = Competition::select('sport.name as sports')
+        //     ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+        //     ->where('ID_event', $id)
+        //     ->distinct()
+        //     ->select('sport.*')
+        //     ->get();
+
+        // $contestants = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+        //                 ->leftJoin('user', 'contestant_list.ID_user', 'user.ID_user')
+        //                 ->leftJoin('user_origin', 'user.ID_user', 'user_origin.user_id')
+        //                 ->leftJoin('sport', 'competition_list.sport', '=', 'sport.ID_sport')
+        //                 ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+        //                 ->where('competition_list.ID_event', $id)
+        //                 ->select('contestant_list.*',
+        //                     'competition_list.level as competition_name',
+        //                     'sport.name as sport_name',
+        //                     'event_list.name as event_name',
+        //                     'user.full_name', 
+        //                     'user_origin.indo_province_name',
+        //                     'user_origin.indo_city_name',
+        //                     'user_origin.state_name',
+        //                     'user_origin.country_name',
+        //                 )
+        //                 ->orderByDesc('sport.name')
+        //                 ->orderByDesc('contestant_list.created_at')
+        //                 ->get();
+
+        return view('pages.user.check-in', compact('event', 'competitions', 'groupedCompetitions'));
     }
 
     public function viewUserLoginPage(Request $request){

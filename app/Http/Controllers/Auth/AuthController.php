@@ -45,6 +45,11 @@ class AuthController extends Controller
             $findUserByEmail->last_login_at = Carbon::now();
             $findUserByEmail->save();
 
+            $defaultLocale = App::getLocale();
+            if($findUserByEmail->locale == null) {
+                $findUserByEmail->locale = $defaultLocale;
+                $findUserByEmail->save();
+            }
             session(['lang' => $findUserByEmail->locale]);
 
             return response()->json([

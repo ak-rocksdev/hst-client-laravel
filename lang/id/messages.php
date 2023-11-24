@@ -52,6 +52,7 @@ return [
     "back_to_home" => "Kembali ke Beranda",
     "full_name" => "Nama Lengkap",
     "nickname" => "Nama Panggilan",
+    "regex_nick_name" => "Hanya huruf yang diperbolehkan",
     "optional" => "Opsional",
     "re_password" => "Ulangi Kata Sandi",
     "phone" => "Nomor Telepon",
@@ -99,7 +100,9 @@ return [
     "submit_score" => "Submit Skor",
     "back" => "Kembali",
     "next_player" => "Peserta Berikutnya",
+    "finish" => "Selesai",
     "cancel" => "Batal",
+    "question_submit_score" => "Apakah anda yakin untuk submit skor ini?",
     "question_verify_score" => "Apakah anda yakin ingin memverifikasi skor ini?",
 
     // response
@@ -119,4 +122,6 @@ return [
     "response_score_is_set" => "Skor Berhasil Di Set!",
     "response_score_is_verified" => "Verifikasi Berhasil!",
     "response_score_is_already_verified" => "Skor Sudah Di Verifikasi!",
+    "response_score_is_not_complete" => "Skor Juri Belum Lengkap!",
+    "response_cannot_submit_score_after_verify" => "Head Judge Telah Memverifikasi Skor, Tidak Dapat Menilai Ulang!",
 ];

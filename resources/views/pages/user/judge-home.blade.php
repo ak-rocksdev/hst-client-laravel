@@ -10,6 +10,7 @@
 
 @section('page-type')website @stop
 
+@section('meta') <meta name="robots" content="noindex, nofollow"> @stop
 
 @section('body')
 <div class="jumbotron jumbotronImage" style="background-image: url();"> </div>
@@ -95,12 +96,13 @@
                     <thead>
                         <tr colspan="3">
                             <th class="text-center" width="10%"><span class="fw-bold">NO.</span></th>
-                            <th width="50%">
+                            <th width="40%">
                                 <span class="fw-bold">
                                     {{ __('messages.name') }}
                                 </span>
                             </th>
                             <th width="20%"><span class="fw-bold">{{ __('messages.origin') }}</span></th>
+                            <th width="10%" class="text-center"><span class="fw-bold">Status</span></th>
                             <th width="20%" class="text-center"><span class="fw-bold">Action</span></th>
                         </tr>
                     </thead>
@@ -118,20 +120,15 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        let element = `<tr>
-                    <td colspan="4" class="text-center">
-                        <div class="titleContent">{!! __('messages.no_selected_event_on_judge_message') !!}</div>
-                    </td>
-                </tr>`;
-        $('#participant-table-body').append(element);
+        resetTable();
     });
 
     function resetTable() {
         $('#participant-table-body').empty();
 
         let element = `<tr>
-                    <td colspan="4" class="text-center">
-                        <div class="titleContent">{!! __('messages.no_event_message') !!}</div>
+                    <td colspan="5" class="text-center">
+                        <div class="titleContent">{!! __('messages.no_selected_event_on_judge_message') !!}</div>
                     </td>
                 </tr>`;
         $('#participant-table-body').append(element);
@@ -321,13 +318,16 @@
                             <td class="d-flex flex-start align-items-center">
                                 <img src="${profileUrl}" height="50" alt="User Photo" class="user-photo-thumbnail me-3" />
                                 <div>
-                                    <span class="fw-bold">${participant.full_name} (${participant.age} YO)</span>
+                                    <span class="fw-bold">${participant.full_name} (${participant.nick_name}) - ${participant.age} YO</span>
                                     <br />
                                     <small class="d-block text-capitalize">Stance: ${participant.stance == 1 ? 'Regular' : 'Goofy'}</small>
                                 </div>
                             </td>
                             <td>
                                 ${origin}
+                            </td>
+                            <td class="text-center">
+                                ${participant.final_score ? '<span class="badge bg-success"><i class="fa-solid fa-circle-check me-2 text-white"></i>Scored</span>' : '<span class="badge bg-danger"><i class="fa-solid fa-circle-xmark me-2 text-white"></i>Not Scored</span>'}
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-red btn-red-sm" onclick="play(${participant.ID_running})">
@@ -366,17 +366,6 @@
 
     function play(runningId) {
         window.location.href = '/event/judge/scoring/' + runningId;
-    }
-
-    async function checkFileExists(filename) {
-        try {
-            let response = await fetch(filename);
-            let data = await response.json();
-            return data.exists;
-        } catch (error) {
-            console.error('Error checking file existence:', error);
-            return false;
-        }
     }
 </script>
 @stop

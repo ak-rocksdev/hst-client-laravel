@@ -9,10 +9,15 @@ class Competition extends Model
 {
     use HasFactory;
 
-    public function contestants()
+    public function checkedInContestants()
     {   
         return $this->hasMany(Contestant::class, 'ID_competition', 'ID_competition')
             ->where('attendance', 1);
+    }
+
+    public function contestants()
+    {   
+        return $this->hasMany(Contestant::class, 'ID_competition', 'ID_competition');
     }
 
     public function gamesForFinals()

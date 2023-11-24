@@ -25469,3 +25469,146 @@ ol ol > li:before {
     left: -47px;
   }
 }
+.qr-icon {
+  padding: 1.25rem;
+  background: linear-gradient(to top, var(--red), #ff4646);
+  color: var(--white);
+  height: 100%;
+}
+.qr-icon i {
+  font-size: 110px;
+}
+
+.title {
+  font-size: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+}
+
+.check-in-container {
+  height: 140px;
+}
+
+.checked-in {
+  text-align: center;
+  line-height: 1.2;
+  background: linear-gradient(to top, var(--black), #3e3e3e);
+  color: var(--white);
+  height: 100%;
+  width: 160px;
+}
+.checked-in div > .title {
+  font-size: 1.2rem;
+}
+.checked-in div > .quantity {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--red);
+}
+
+.card {
+  border: none;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.card:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #E1BEE7;
+  transform: scaleY(1);
+  transition: all 0.5s;
+  transform-origin: bottom;
+}
+
+.card:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #8E24AA;
+  transform: scaleY(0);
+  transition: all 0.5s;
+  transform-origin: bottom;
+}
+
+.card:hover::after {
+  transform: scaleY(1);
+}
+
+.fonts {
+  font-size: 11px;
+}
+
+.social-list {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  padding: 0;
+}
+
+.social-list li {
+  padding: 10px;
+  color: #8E24AA;
+  font-size: 19px;
+}
+
+.buttons button:nth-child(1) {
+  border: 1px solid #8E24AA !important;
+  color: #8E24AA;
+  height: 40px;
+  line-height: 1;
+}
+
+.buttons button:nth-child(1):hover {
+  border: 1px solid #8E24AA !important;
+  color: #fff;
+  height: 40px;
+  background-color: #8E24AA;
+}
+
+.buttons button:nth-child(2) {
+  border: 1px solid #8E24AA !important;
+  background-color: #8E24AA;
+  color: #fff;
+  height: 40px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .check-in-container {
+    height: 120px;
+  }
+  .checked-in {
+    width: 130px;
+  }
+  .checked-in div > .title {
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+  .checked-in div > .quantity {
+    font-size: 2rem;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+  .subtitle {
+    font-size: 0.95rem;
+  }
+  .qr-icon i {
+    font-size: 90px;
+  }
+  .card {
+    width: 100%;
+  }
+}

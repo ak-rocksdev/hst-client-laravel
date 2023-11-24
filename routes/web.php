@@ -49,6 +49,8 @@ Route::group(['middleware' => 'language'], function () {
             Route::get('/detail/{id}',          [PageController::class, 'viewMyEventDetailMemberPage']);
             Route::get('/judge/{id}',           [PageController::class, 'viewEventDetailJudgePage']);
             Route::get('/judge/scoring/{runningId}',   [PageController::class, 'viewJudgeScoringPage']);
+            // check in
+            Route::get('/check-in/{id}',        [PageController::class, 'viewCheckInPage']);
         });
     });
 });

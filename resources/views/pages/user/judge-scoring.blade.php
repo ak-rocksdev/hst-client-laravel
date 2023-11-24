@@ -56,7 +56,7 @@
     <div class="row">
         <div class="col-7">
             <div class="score-container mb-3">
-                <span id="score-value" class="score">0.00</span>
+                <span id="score-value" class="score">...</span>
             </div>
             <!-- create contestant name container with white background, black text -->
             <div class="contestant-container bg-white text-dark rounded-4 mb-3">
@@ -102,14 +102,22 @@
         </div>
     </div>
     <div class="row">
-        <div class="col text-center">
-            <button type="button" class="btn btn-red fw-bold btn-lg px-5 mt-5" data-bs-toggle="modal" data-bs-target="#submitScoreModal">{{ __('messages.submit_score') }}</button>
-            <!-- Verify Button -->
-            <button id="verify-score" type="button" data-bs-toggle="modal" data-bs-target="#verifyScoreModal" class="btn btn-tosca fw-bold btn-lg px-5 mt-5">{{ __('messages.verify_score') }}</button>
+        <div class="col text-center d-flex flex-column mt-3 gap-3">
+            <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-red fw-bold btn-lg px-5" data-bs-toggle="modal" data-bs-target="#submitScoreModal">{{ __('messages.submit_score') }}</button>
+                @if ($isHeadJudge)
+                <button id="verify-score" type="button" class="btn btn-tosca fw-bold btn-lg px-5" data-bs-toggle="modal" data-bs-target="#verifyScoreModal">{{ __('messages.verify_score') }}</button>
+                @endif
+            </div>
             <!-- back to participant list button, and on the right button for the next player -->
-            <div class="d-flex justify-content-between mt-3">
-                <a href="/event/judge/{{ $contestant->ID_event }}" class="btn btn-secondary fs-2 fw-bold btn-lg px-5">Back</a>
-                <a class="btn btn-yellow fs-2 fw-bold btn-lg px-5">Next Player</a>
+            <div class="d-flex justify-content-between gap-2">
+                <a href="/event/judge/{{ $contestant->ID_event }}" class="btn btn-secondary fs-2 fw-bold btn-lg px-5">{{ __('messages.back') }}</a>
+                @php
+                    $nextLink = $nextRunningId == null ? '/event/judge/'.$contestant->ID_event : '/event/judge/scoring/'.$nextRunningId->ID_running;
+                    $nextText = $nextRunningId == null ?  __('messages.finish') : __('messages.next_player');
+                    $className = $nextRunningId == null ? 'btn-success' : 'btn-yellow';
+                @endphp
+                <a href="{{ $nextLink }}" class="btn {{ $className }} fs-2 fw-bold btn-lg px-5">{{ $nextText }}</a>
             </div>
         </div>
     </div>
@@ -123,7 +131,7 @@
             </div>
             <div class="modal-body">
                 <!-- Get Judge score API, show all judges score and their status, and the average score if submitted -->
-                <p>Are you sure you want to submit this score?</p>
+                <p>{{ __('messages.question_submit_score') }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Cancel</button>
@@ -158,14 +166,14 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    getScoreFromCurrentJudges();
-
     const scoreRange = document.getElementById('score-range');
     const scoreValue = document.getElementById('score-value');
     scoreRange.addEventListener('input', function() {
         scoreValue.innerHTML = (Math.round(scoreRange.value * 100) / 100).toFixed(2);
     });
 
+    getScoreFromCurrentJudges();
+    
     function submitScore() {
         const action = '/api/score/set';
         const method = 'POST';
@@ -211,6 +219,8 @@
     }
 
     function getScoreFromCurrentJudges() {
+        const scoreValue = document.getElementById('score-value');
+        scoreValue.innerHTML = '...';
         const action = '/api/score/get';
         const method = 'GET';
         const data = {
@@ -220,32 +230,34 @@
         };
         
         const successCallback = function(response) {
-            scoreRange.value = response.data.score;
-            scoreValue.innerHTML = (Math.round(scoreRange.value * 100) / 100).toFixed(2);
+            let data = response.data;
+            if(data) {
+                scoreRange.value = data.score;
+                scoreValue.innerHTML = (Math.round(scoreRange.value * 100) / 100).toFixed(2);
+            } else {
+                $('#score-value').html('0.00');
+            }
         };
         const errorCallback = function(response) {
-            console.log(response);
+            $('#score-value').html('0.00');
         };
         api(action, method, data, successCallback, errorCallback);
     }
 
     // on click #verify-score button, do get current average score from all judges, and Show on verifyScoreModal, and set to id="average-score-value"
     $('#verify-score').on('click', function() {
-        const action = '/api/score/verify';
-        const method = 'POST';
-        const data = {
-            ID_contestant: {{ $contestant->ID_contestant }},
-            ID_games: {{ $contestant->ID_games }},
-            _token: '{{ csrf_token() }}',
-        };
-        console.log('click')
+        $('#average-score-value').html('Loading...');
+        const action = '/api/score/calculate/' + {{ $contestant->ID_contestant }} + '/' + {{ $contestant->ID_games }};
+        const method = 'GET';
+        const data = null;
         const successCallback = function(response) {
-            $('#average-score-value').html(response.data.average_score);
+            console.log(response)
+            $('#average-score-value').html(response);
         };
         const errorCallback = function(response) {
             console.log(response);
         };
-        // api(action, method, data, successCallback, errorCallback);
+        api(action, method, data, successCallback, errorCallback);
     });
 
     function verifyScore() {

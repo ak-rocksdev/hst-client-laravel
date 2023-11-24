@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 class Score extends Model
 {
     use HasFactory;
@@ -13,13 +15,14 @@ class Score extends Model
     {
         parent::boot();
 
-        $auth = auth()->user();
         static::creating(function ($model) {
-            $model->created_by = $auth->ID_user;
+            $user = Auth::user();
+            $model->created_by = $user->ID_user;
             $model->created_at = now();
         });
         static::updating(function ($model) {
-            $model->updated_by = $auth->ID_user;
+            $user = Auth::user();
+            $model->updated_by = $user->ID_user;
             $model->updated_at = now();
         });
     }

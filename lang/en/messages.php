@@ -52,6 +52,7 @@ return [
     "back_to_home" => "Back to Home",
     "full_name" => "Full Name / Real Name",
     "nickname" => "Display Name / Nick Name",
+    "regex_nick_name" => "Only letters are allowed",
     "optional" => "Optional",
     "re_password" => "Re-type Password",
     "phone" => "Phone Number",
@@ -99,7 +100,9 @@ return [
     "submit_score" => "Submit Score",
     "back" => "Back",
     "next_player" => "Next Player",
+    "finish" => "Finish",
     "cancel" => "Cancel",
+    "question_submit_score" => "Are you sure you want to submit this score?",
     "question_verify_score" => "Are you sure you want to verify this score?",
 
     // response
@@ -118,5 +121,7 @@ return [
     "response_new_password_created" => "Password has been updated!",
     "response_score_is_set" => "Score is Successfully Set!",
     "response_score_is_verified" => "Score is Successfully Verified!",
-    "response_score_is_already_verified" => "Score is Already Verified!",
+    "response_score_is_already_verified" => "Score Has Already Been Verified!",
+    "response_score_is_not_complete" => "Judge Score is Not Complete!",
+    "response_cannot_submit_score_after_verify" => "Head Judge Has been Verified the score, Cannot Re-submit!"
 ];

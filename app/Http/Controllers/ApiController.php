@@ -13,6 +13,7 @@ use App\Models\Score;
 use App\Models\UserOrigin;
 use App\Models\Participant;
 use App\Models\Judge;
+use App\Models\RunningList;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
@@ -588,11 +589,18 @@ class ApiController extends Controller
                         ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
                         ->leftJoin('running_list', 'running_list.ID_contestant', 'contestant_list.ID_contestant')
                         ->leftJoin('games', 'running_list.ID_games', 'games.ID_games')
+                        // ->leftJoin('score_list', 'score_list.ID_contestant', 'contestant_list.ID_contestant')
+                        // ->where('score_list.ID_judge', 0)
+                        // ->where('score_list.ID_contestant', 'contestant_list.ID_contestant')
                         ->where('competition_list.ID_competition', $id_competition)
                         ->where('running_list.ID_games', $id_games)
                         ->where('contestant_list.attendance', 1)
                         ->where('games.ID_type', $id_type)
                         ->select(
+                            // 'score_list.score',
+                            // 'score_list.fixed',
+                            DB::raw('(SELECT score FROM score_list WHERE contestant_list.ID_contestant = score_list.ID_contestant AND score_list.ID_judge = 0 AND score_list.ID_games = running_list.ID_games LIMIT 1) as final_score'),
+                            DB::raw('IF(user.nick_name IS NULL, SUBSTRING_INDEX(user.full_name, " ", 1), user.nick_name) as nick_name'),
                             'event_list.name as event_name',
                             'competition_list.level as competition_name',
                             'games.ID_type as games_type',
@@ -605,7 +613,6 @@ class ApiController extends Controller
                             'contestant_list.ID_contestant',
                             'contestant_list.ID_user',
                             'user.full_name',
-                            'user.dateofbirth',
                             DB::raw('FLOOR(DATEDIFF(CURRENT_DATE, user.dateofbirth) / 365) as age'),
                             'user.email',
                             'user.photoFile',
@@ -619,6 +626,7 @@ class ApiController extends Controller
                         )
                         ->distinct()
                         ->orderBy('running_list.increment')
+                        ->orderBy('running_list.ID_running')
                         ->get();  // perlu di filter berdasarkan qual / final dan games
 
         return response()->json([
@@ -626,6 +634,50 @@ class ApiController extends Controller
             'data' => $participants,
             'code' => 200
         ], 200);
+    }
+
+    public function getContestantByUserIdAndIDcompetition(Request $request) {
+        // validate if id user if available on the user table
+        $user = User::where('ID_user', $request->ID_user)->first();
+        if($user == null) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    '0' => __('messages.response_user_not_found')
+                ],
+                'code' => 400
+            ], 400);
+        }
+
+        // validate if user already registered on the competition
+        $contestant = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+                        ->leftJoin('user', 'contestant_list.ID_user', '=', 'user.ID_user')
+                        ->where('contestant_list.ID_user', $request->ID_user)
+                        // ->where('contestant_list.ID_competition', $request->ID_competition)
+                        ->select(
+                            'competition_list.level',
+                            'contestant_list.ID_competition',
+                            DB::raw('user.full_name as full_name'),
+                            DB::raw('IF(user.nick_name IS NULL, SUBSTRING_INDEX(user.full_name, " ", 1), user.nick_name) as nick_name'),
+                            DB::raw('FLOOR(DATEDIFF(CURRENT_DATE, user.dateofbirth) / 365) as age'),
+                        )
+                        ->get();
+                        // return dd($contestant);
+        if($contestant->count() == 0) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    '0' => __('messages.response_user_not_registered')
+                ],
+                'code' => 400
+            ], 400);
+        } else {
+            return response()->json([
+                'status' => 'success',
+                'data' => $contestant,
+                'code' => 200
+            ], 200);
+        }
     }
 
     public function updatePasswordByUserId(UserPasswordUpdateRequest $request) {
@@ -659,13 +711,12 @@ class ApiController extends Controller
     }
 
     public function setContestantScoreByJudgeIdOnCurrentGames(Request $request){
-        // check if score where ID_contestant, ID_games, ID_judge = 0 is exist
-        $score = Score::where('ID_contestant', $request->ID_contestant)
+        $verifiedScore = Score::where('ID_contestant', $request->ID_contestant)
                         ->where('ID_games', $request->ID_games)
                         ->where('ID_judge', 0)
                         ->first();
 
-        if($score == null) {
+        if($verifiedScore == null) {
             $score = Score::where('ID_contestant', $request->ID_contestant)
                             ->where('ID_games', $request->ID_games)
                             ->where('ID_judge', $request->ID_judge)
@@ -695,7 +746,7 @@ class ApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'messages' => [
-                    '0' => 'Score is Already Submitted by The Head Judge'
+                    '0' => __('messages.response_cannot_submit_score_after_verify')
                 ],
                 'code' => 400
             ], 400);
@@ -703,10 +754,27 @@ class ApiController extends Controller
     }
 
     public function verifyScoreByContestantId(VerifyContestantScoreRequest $request) {
-        // validate if score from all judges is already set - formRequest
-        // validate if verified score is already exist - formRequest
         // calculate the average score from DB selected system
+        $validated = $request->validated();
+        $averageScore = $this->calculateAverageScore($validated['ID_contestant'], $validated['ID_games']);
+        
         // create database record with ID_judge = 0, score from the calculation, fixed value = 1, and current ID_contestant
+        Score::create([
+            'ID_contestant' => $validated['ID_contestant'],
+            'ID_games' => $validated['ID_games'],
+            'ID_judge' => 0,
+            'score' => $averageScore,
+            'fixed' => 1
+        ]);
+
+        // set Running status to 2 (score is available and verified)
+        $running = RunningList::where('ID_contestant', $validated['ID_contestant'])
+                    ->where('ID_games', $validated['ID_games'])
+                    ->first();
+
+        $running->status = 2;
+        $running->save();
+        
         // return response success
 
         return response()->json([
@@ -718,11 +786,29 @@ class ApiController extends Controller
         ], 200);
     }
 
-    private function calculateAverageScore($scores) {
-        $sum = 0;
-        foreach($scores as $score) {
-            $sum += $score;
+    public function calculateAverageScore($id_contestant, $id_games) { //NOTE - Perlu ditambah sistem penilaian 5 juri, highest and lowest score will be removed, then calculate the average score
+        $id_competition = Games::where('ID_games', $id_games)->first()->ID_competition;
+        $judgeCount = Judge::where('ID_competition', $id_competition)->count();
+
+        // get all score from score_list table where ID_contestant = $id_contestant, ID_games = $id_games, ID_judge != 0, fixed = 1, order by score desc
+        $judgesScores = Score::where('ID_contestant', $id_contestant)
+                        ->where('ID_games', $id_games)
+                        ->where('ID_judge', '!=', 0)
+                        ->where('fixed', 1)
+                        ->orderByDesc('score')
+                        ->get();
+        
+        $calculate = 0.00;
+        $count = 0;
+        foreach($judgesScores as $score) {
+            if($count < $judgeCount) {
+                $calculate += $score->score;
+                $count++;
+            }
         }
-        return $sum / count($scores);
+
+        $result = number_format($calculate / $judgeCount, 2);
+
+        return $result;
     }
 }

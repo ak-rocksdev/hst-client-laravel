@@ -40,7 +40,7 @@
 
 <div id="detail" class="container py-5">
     <div class="row mb-4">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-6">
             <div class="eventInfo e_container">
                 <div class="eventInfo e_header">
                     <h2>{{ $event->name }}</h2>
@@ -78,9 +78,16 @@
 
 <div class="container">
     <div class="row">
+        @if ($isJudgeForThisEvent)
         <div class="col-12">
             <a href="/event/judge/{{ $event->ID_event }}" class="btn btn-danger mb-3">
                 <i class="fa-solid fa-calculator me-3"></i>Go To Judging Area
+            </a>
+        </div>
+        @endif
+        <div class="col-12">
+            <a href="/event/check-in/{{ $event->ID_event }}" class="btn btn-secondary mb-3">
+                <i class="fa-solid fa-user-check me-2"></i>Check-In Area
             </a>
         </div>
     </div>

@@ -42,6 +42,12 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/get',                          [ApiController::class, 'getContestantScoreByJudgeIdOnCurrentGames']);
         Route::post('/set',                         [ApiController::class, 'setContestantScoreByJudgeIdOnCurrentGames']);
         Route::post('/verify',                      [ApiController::class, 'verifyScoreByContestantId']);
+        Route::get('/calculate/{id_contestant}/{id_games}', [ApiController::class, 'calculateAverageScore']);
+    });
+    // route prefix check-in
+    Route::prefix('/check-in')->group(function () {
+        Route::get('/confirmation',                 [ApiController::class, 'getContestantByUserIdAndIDcompetition']);
+        Route::post('/set',                         [ApiController::class, 'setContestantByCompetitionId']);
     });
     // Route::middleware(['role:member'])->group(function () { // Only used for first time
     //     Route::get('/assign-roles-all-users',           [PermissionController::class, 'assignRolesToAllUsers']);

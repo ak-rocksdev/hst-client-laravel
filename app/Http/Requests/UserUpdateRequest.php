@@ -26,9 +26,12 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        // user auth
+        $auth = \Auth::user();
         return [
             'full_name' => 'required|max:50',
-            // 'email' => 'required|email|unique:user,email',
+            'email' => 'required|email|unique:user,email,'.$auth->ID_user.',ID_user',
+            'nick_name' => 'required|max:20|regex:/^[a-zA-Z]+$/',
             'dateofbirth' => 'required|date',
             'locale' => 'required|in:en,id',
             'country_code' => 'required',
@@ -47,6 +50,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'full_name' => __('messages.name'),
             'dateofbirth' => __('messages.dateofbirth'),
+            'nick_name' => __('messages.nickname'),
             'locale' => __('messages.locale'),
             'country_code' => __('messages.country_code'),
             'phone' => __('messages.phone'),
@@ -66,6 +70,7 @@ class UserUpdateRequest extends FormRequest
             'city.required_unless' => __('messages.city').' '.__('messages.required'),
             'province.required_if' => __('messages.province').' '.__('messages.required'),
             'indoCity.required_if' => __('messages.city').' '.__('messages.required'),
+            'nick_name.regex' => __('messages.nickname').' '.__('messages.regex_nick_name'),
         ];
     }
 

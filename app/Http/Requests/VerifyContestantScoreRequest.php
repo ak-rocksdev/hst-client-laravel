@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 
 use Illuminate\Validation\Rule;
 
+use App\Rules\CheckAllJudgesHasBeenSubmittedRule;
+
 class VerifyContestantScoreRequest extends FormRequest
 {
     /**
@@ -32,6 +34,7 @@ class VerifyContestantScoreRequest extends FormRequest
             'ID_contestant' => 'required',
             'ID_games' => [
                 'required',
+                new CheckAllJudgesHasBeenSubmittedRule($this->ID_contestant, $this->ID_games),
                 Rule::unique('score_list')
                     ->where('ID_contestant', $this->ID_contestant)
                     ->where('ID_games', $this->ID_games)
