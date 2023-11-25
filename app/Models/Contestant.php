@@ -26,6 +26,10 @@ class Contestant extends Model
             $model->ID_contestant = Contestant::max('ID_contestant') + 1;
             $model->created_by = $user->ID_user;
         });
+        static::updating(function ($model) {
+            $user = Auth::user();
+            $model->updated_by = $user->ID_user;
+        });
     }
 
     protected $table = 'contestant_list';

@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Auth;
+
 class Participant extends Model
 {
     use HasFactory;
 
-    // public static function boot()
-    // {
-    //     parent::boot();
-    //     static::creating(function ($model) {
-    //         $model->created_by = 1; // NOTE: Should be replaced by Auth->ID_user 
-    //     });
-    // }
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $user = Auth::user();
+            $model->created_by = $user->ID_user;
+        });
+    }
 
     protected $table = 'participant';
     public $incrementing = true;

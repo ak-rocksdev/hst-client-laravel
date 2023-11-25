@@ -104,6 +104,7 @@ return [
     "cancel" => "Batal",
     "question_submit_score" => "Apakah anda yakin untuk submit skor ini?",
     "question_verify_score" => "Apakah anda yakin ingin memverifikasi skor ini?",
+    "select_category_check_in" => "Pilih Kategori untuk Check-In",
 
     // response
     "response_password_updated" => "Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.",
@@ -111,8 +112,11 @@ return [
     "response_email_not_available" => "Email yang anda tulis belum terdaftar, Cek penulisannya!",
     "response_event_date_invalid" => "Event yang dipilih tidak tersedia untuk pendaftaran. Atau telah lewat dari waktu pendaftaran.",
     "response_event_already_registered" => "Anda sudah terdaftar untuk event ini.",
+    "response_event_status_is_private" => "Event tidak tersedia untuk pendaftaran publik, silakan hubungi panitia event.",
     "response_competition_already_registered" => "Anda sudah terdaftar untuk kompetisi ini.",
     "response_max_join_competition" => "Maksimal kompetisi yang dapat anda ikuti di event ini adalah :number1. Pilih kurang dari :number2 kategori",
+    "response_user_profile_is_not_complete" => "Mohon lengkapi profil anda terlebih dahulu!",
+    "response_user_origin_is_not_complete" => "Mohon lengkapi Informasi Asal anda terlebih dahulu!",
     "response_register_event_success" => "Anda telah berhasil mendaftar untuk event ini!",
     "response_failed" => "Gagal!",
     "response_success" => "Berhasil!",
@@ -124,4 +128,10 @@ return [
     "response_score_is_already_verified" => "Skor Sudah Di Verifikasi!",
     "response_score_is_not_complete" => "Skor Juri Belum Lengkap!",
     "response_cannot_submit_score_after_verify" => "Head Judge Telah Memverifikasi Skor, Tidak Dapat Menilai Ulang!",
+    "response_failed_to_set_attendance" => "Gagal untuk Check-In!",
+    "response_success_attendance_is_set" => "Check-In Berhasil!",
+    "response_competition_not_selected" => "Silakan pilih minimal satu kompetisi!",
+    "response_already_checked_in" => "sudah check-in sebelumnya",
+    "response_successfully_checked_in" => "berhasil check-in",
+    "response_user_not_registered" => "User belum terdaftar!",
 ];

@@ -104,6 +104,7 @@ return [
     "cancel" => "Cancel",
     "question_submit_score" => "Are you sure you want to submit this score?",
     "question_verify_score" => "Are you sure you want to verify this score?",
+    "select_category_check_in" => "Select Category to Check-In",
 
     // response
     "response_password_updated" => "Your Password has been updated! Please login with your new password.",
@@ -111,8 +112,11 @@ return [
     "response_email_not_available" => "The Email is not available, Check your writing!",
     "response_event_date_invalid" => "The selected event is not open for registration. Or it has passed the registration time.",
     "response_event_already_registered" => "You already registered for this event.",
+    "response_event_status_is_private" => "The event is not available for public registration, please contact the event organizer.",
     "response_competition_already_registered" => "You already registered for this competition.",
     "response_max_join_competition" => "Maximum of competitions you can join in this event is :number1 . Pick less than :number2 categories",
+    "response_user_profile_is_not_complete" => "Please complete your profile first!",
+    "response_user_origin_is_not_complete" => "Please complete your origin info first!",
     "response_register_event_success" => "You have successfully registered for the event!",
     "response_failed" => "Failed!",
     "response_success" => "Success!",
@@ -123,5 +127,11 @@ return [
     "response_score_is_verified" => "Score is Successfully Verified!",
     "response_score_is_already_verified" => "Score Has Already Been Verified!",
     "response_score_is_not_complete" => "Judge Score is Not Complete!",
-    "response_cannot_submit_score_after_verify" => "Head Judge Has been Verified the score, Cannot Re-submit!"
+    "response_cannot_submit_score_after_verify" => "Head Judge Has been Verified the score, Cannot Re-submit!",
+    "response_failed_to_set_attendance" => "Failed to set attendance!",
+    "response_success_attendance_is_set" => "Check-In Success!",
+    "response_competition_not_selected" => "Please select at least one competition!",
+    "response_already_checked_in" => "already checked-in previously",
+    "response_successfully_checked_in" => "successfully checked-in",
+    "response_user_not_registered" => "User is not registered!",
 ];

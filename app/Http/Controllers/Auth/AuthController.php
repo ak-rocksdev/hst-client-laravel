@@ -51,6 +51,7 @@ class AuthController extends Controller
                 $findUserByEmail->save();
             }
             session(['lang' => $findUserByEmail->locale]);
+            App::setLocale($findUserByEmail->locale);
 
             return response()->json([
                 'status' => 'error',

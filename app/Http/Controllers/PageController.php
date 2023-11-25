@@ -83,6 +83,7 @@ class PageController extends Controller
             ->join('sport', 'competition_list.sport', '=', 'sport.ID_sport')
             ->where('ID_event', $id)
             ->orderBy('sport')
+            ->orderBy('competition_list.ID_competition')
             ->get();
 
         $groupedCompetitions = [];

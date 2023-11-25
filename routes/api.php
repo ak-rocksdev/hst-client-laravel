@@ -46,8 +46,8 @@ Route::middleware(['auth'])->group(function() {
     });
     // route prefix check-in
     Route::prefix('/check-in')->group(function () {
-        Route::get('/confirmation',                 [ApiController::class, 'getContestantByUserIdAndIDcompetition']);
-        Route::post('/set',                         [ApiController::class, 'setContestantByCompetitionId']);
+        Route::get('/confirmation',                 [ApiController::class, 'getContestantByUserIdAndIDevent']);
+        Route::post('/set',                         [ApiController::class, 'setAttendanceByCompetitionId']);
     });
     // Route::middleware(['role:member'])->group(function () { // Only used for first time
     //     Route::get('/assign-roles-all-users',           [PermissionController::class, 'assignRolesToAllUsers']);

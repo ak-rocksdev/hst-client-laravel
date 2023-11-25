@@ -102,11 +102,12 @@
 
 @section('script')
 <script src="https://unpkg.com/html5-qrcode@2.2.1/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let token = "{{ csrf_token() }}";
 
     const html5QrCode = new Html5Qrcode(/* element id */ "qr-reader");
-    function initScanner(idCompetition) {
+    function initScanner() {
         $('#user-qr-container').html('');
         $('#qr-reader').show();
 
@@ -142,27 +143,25 @@
         function onScanSuccess(userId, decodedResult) {
             // showLoading();
             console.log(`Scan result: ${userId}`);
-            previewParticipant(token, userId, idCompetition);
+            previewParticipant(token, userId);
         }
     }
 
     $('#show-scanner').on('click', function() {
-        const idCompetition = $(this).data('id-competition');
-        initScanner(idCompetition);
+        initScanner();
     });
     
     $('#modalScanQr').on('hidden.bs.modal', function (e) {
         html5QrCode.stop();
     });
 
-    function previewParticipant(token, userId, idCompetition) {
-        // return console.log(idCompetition);
+    function previewParticipant(token, userId) {
         let action = '/api/check-in/confirmation';
         let method = 'GET';
         let data = {
             _token: token,
             ID_user: userId,
-            // ID_competition: idCompetition,
+            ID_event: {{ $event->ID_event }},
         };
         let successCallback = function(response) {
             let data = response.data;
@@ -170,40 +169,107 @@
             let template = `
                 <div class="card p-3 py-4">
                     <div class="text-center mb-3">
-                        <img src="/assets/img/avatar400x400.jpg" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
-                    </div>`
-                template +=`<div class="text-center my-3">
+                        <img src="/assets/img/avatar400x400.jpg" alt="Profile Picture" class="avatar rounded-circle" style="width: 100px; height: 100px;">
+                    </div>`;
+            template +=`<div class="text-center my-3">
                         <h5 class="mt-2 mb-0">${data[0].full_name}</h5>
                         <span>(${data[0].nick_name}) - <strong>${data[0].age} YO</strong></span>
+                        <div class="fst-italic mt-3">${data[0].country_id ? '<img src="/assets/img/flag/'+ data[0].country_id.toLowerCase() +'.png" height="20" class="me-2">' + data[0].country_name + '<br />' + (data[0].country_id == 'ID' ? data[0].indo_province_name + ' - ' + data[0].indo_city_name : data[0].state_name + ' - ' + data[0].city_name) : 'Origin Not Set' }</div>
                     </div>
                     <div class="text-center mb-2">
-                        <h5 class="fw-bold">Select Category to Check-In</h5>
+                        <h5 class="fw-bold">{{ __('messages.select_category_check_in') }}</h5>
                     </div>`;
-                        data.forEach(function(item) {
-                            template += `
-                            <input type="checkbox" class="btn-check" id="btn-check-${item.ID_competition}" value="${item.ID_competition}" autocomplete="off">
-                            <label class="btn btn-primary mb-1" for="btn-check-${item.ID_competition}">${item.level}</label>
-                            `;
-                        });
-                    template += `
-                    <div class="buttons text-center mt-3">
-                        <button class="btn btn-outline-primary px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button onClick="check-in" class="btn btn-primary px-4 ms-3">Check-In</button>
-                    </div>
+            data.forEach(function(item) {
+                template += `<input type="checkbox" class="btn-check" id="btn-check-${item.ID_competition}" name="competitions[]" value="${item.ID_competition}" autocomplete="off">
+                            <label class="btn btn-outline-primary fw-bold mb-1" for="btn-check-${item.ID_competition}">${item.level}</label>`;
+            });
+            template += `
+                <div class="buttons text-center mt-3">
+                    <button class="btn btn-outline-primary px-4" data-bs-dismiss="modal">{{ __('messages.back') }}</button>
+                    <button onClick="checkIn(${data[0].ID_user})" class="btn btn-primary px-4 ms-3">Check-In</button>
                 </div>
-            `;
+            </div>`;
 
             $('#user-qr-container').html(template);
             
             $('#qr-reader').hide();
         };
         let errorCallback = function(response) {
+            let messages = response.responseJSON.messages;
+            let text = '';
+            messages.forEach(function(item) {
+                text += `${item}`;
+            });
+
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: response.responseJSON.message,
+                html: text,
+            }).then(function() {
+                initScanner();
             });
         };
+        api(action, method, data, successCallback, errorCallback);
+    }
+
+    function checkIn(ID_user) {
+        // get selected competitions
+        let competitions = [];
+        $('input[name="competitions[]"]:checked').each(function() {
+            competitions.push($(this).val());
+        });
+
+        if (competitions.length == 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ __('messages.response_competition_not_selected') }}",
+            });
+            return;
+        }
+
+        let action = '/api/check-in/set';
+        let method = 'POST';
+        let data = {
+            _token: token,
+            ID_user: ID_user,
+            ID_competitions: competitions,
+        };
+
+        let successCallback = function(response) {
+            $('#modalScanQr').modal('hide');
+            // Swal.fire timer after 1 second and then reload the page
+
+            let messages = response.messages;
+            console.log(messages)
+
+            // foreach messages to a list of messages
+            let content = '<ul class="text-start p-0 m-0" style="list-style-type: none;">';
+            messages.forEach(function(item) {
+                content += `<li>${item}</li>`;
+            });
+            content += '</ul>';
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Check-in success!',
+                showConfirmButton: true,
+                html: content,
+            }).then(function() {
+                location.reload();
+            });
+        };
+
+        let errorCallback = function(response) {
+            let message = response.responseJSON.messages;
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message,
+            });
+        };
+
         api(action, method, data, successCallback, errorCallback);
     }
 </script>

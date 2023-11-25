@@ -45,7 +45,6 @@
     position: relative;
     overflow: hidden;
     border-radius: 8px;
-    cursor: pointer;
 }
 
 .card:before {
@@ -55,7 +54,7 @@
     top: 0;
     width: 4px;
     height: 100%;
-    background-color: #E1BEE7;
+    background-color: #e7bebe;
     transform: scaleY(1);
     transition: all 0.5s;
     transform-origin: bottom
@@ -68,7 +67,7 @@
     top: 0;
     width: 4px;
     height: 100%;
-    background-color: #8E24AA;
+    background-color: var(--red);
     transform: scaleY(0);
     transition: all 0.5s;
     transform-origin: bottom
@@ -78,6 +77,9 @@
     transform: scaleY(1);
 }
 
+.avatar {
+    box-shadow: 0px 12px 25px rgba(0, 0, 0, 0.25);
+}
 
 .fonts {
     font-size: 11px;
@@ -92,31 +94,38 @@
 
 .social-list li {
     padding: 10px;
-    color: #8E24AA;
+    color: var(--red);
     font-size: 19px;
 }
 
 
 .buttons button:nth-child(1) {
-    border: 1px solid #8E24AA !important;
-    color: #8E24AA;
+    border: 1px solid var(--red) !important;
+    color: var(--red) !important;
     height: 40px;
     line-height: 1;
 }
 
 .buttons button:nth-child(1):hover {
-    border: 1px solid #8E24AA !important;
-    color: #fff;
+    border: 1px solid var(--red) !important;
+    color: #fff !important;
     height: 40px;
-    background-color: #8E24AA;
+    background-color: var(--red) !important;
 }
 
 .buttons button:nth-child(2) {
-    border: 1px solid #8E24AA !important;
-    background-color: #8E24AA;
+    border: 1px solid var(--red) !important;
+    background-color: var(--red);
     color: #fff;
     height: 40px;
     line-height: 1;
+
+    &:hover {
+        border: 1px solid #8d121e !important;
+        background-color: #8d121e;
+        color: #fff;
+        height: 40px;
+    }
 }
 
 @media (max-width: 768px) {

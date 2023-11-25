@@ -15,6 +15,8 @@ use App\Models\Participant;
 use App\Models\Judge;
 use App\Models\RunningList;
 
+use Illuminate\Support\Facades\Validator;
+
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -22,6 +24,7 @@ use Illuminate\Support\Facades\File;
 use DB;
 
 use Auth;
+use App;
 
 use App\Http\Requests\CreateContestantRequest;
 use App\Http\Requests\UserUpdateRequest;
@@ -60,20 +63,33 @@ class ApiController extends Controller
     }
 
     public function registerContestantByCompetitionId(CreateContestantRequest $request) {
-        $data = $request->validated();
-
-        foreach($data['ID_competition'] as $competitionId) {
-            $data['ID_competition'] = $competitionId;
-            $data['attendance'] = 0;
-            $data['insert_user'] = 0;
-            Contestant::create($data);
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+            foreach($data['ID_competition'] as $competitionId) {
+                $data['ID_competition'] = $competitionId;
+                $data['attendance'] = 0;
+                $data['insert_user'] = 0;
+                Contestant::create($data);
+                Participant::create($data);
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+                'code' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    '0' => $e->getMessage()
+                ],
+                'code' => 400
+            ], 400);
         }
-        // Contestant::create($data);
-        return response()->json([
-            'status' => 'success',
-            'data' => $data,
-            'code' => 200
-        ], 200);
+        
     }
 
     public function getEventStatusByUserId(Request $request) {
@@ -384,8 +400,11 @@ class ApiController extends Controller
         $data = $request->validated();
 
         $user = User::where('ID_user', $data['user']['ID_user'])->first();
+
+        // return dd($user->locale, $data['user']['locale']);
         if($user->locale != $data['user']['locale']) {
             session(['lang' => $data['user']['locale']]);
+            App::setLocale($data['user']['locale']);
         }
 
         // check if any data change from the previous data use isDirty()
@@ -398,14 +417,13 @@ class ApiController extends Controller
         $user->phone = $data['user']['phone'];
         $user->country_code_id = $data['user']['country_code_id'];
         $user->instagram = $data['user']['instagram'];
+        $user->locale = $data['user']['locale'];
         
         $userDirty = $user->isDirty();
 
         if($userDirty) {
             $user->update($data['user']);
         }
-
-        $user->update($data['user']);
 
         $userOrigin = UserOrigin::where('user_id', $data['user_origin']['user_id'])->first();
 
@@ -636,33 +654,50 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function getContestantByUserIdAndIDcompetition(Request $request) {
-        // validate if id user if available on the user table
-        $user = User::where('ID_user', $request->ID_user)->first();
-        if($user == null) {
+    public function getContestantByUserIdAndIDevent(Request $request) {
+        // set error if today is not in between start_registration date and end_registration date
+        $event = Event::where('ID_event', $request->ID_event)->first();
+
+        $request->merge([
+            'today' => now()->toDateString(),
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'today' => 'date|after_or_equal:' . $event->start_date . '|before_or_equal:' . $event->end_date,
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
                 'messages' => [
-                    '0' => __('messages.response_user_not_found')
+                    '0' => __('messages.response_event_date_invalid')
                 ],
                 'code' => 400
             ], 400);
         }
-
+        
         // validate if user already registered on the competition
         $contestant = Contestant::leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
                         ->leftJoin('user', 'contestant_list.ID_user', '=', 'user.ID_user')
+                        ->leftJoin('event_list', 'competition_list.ID_event', '=', 'event_list.ID_event')
+                        ->leftJoin('user_origin', 'user.ID_user', '=', 'user_origin.user_id')
                         ->where('contestant_list.ID_user', $request->ID_user)
-                        // ->where('contestant_list.ID_competition', $request->ID_competition)
+                        ->where('competition_list.ID_event', $request->ID_event)
                         ->select(
                             'competition_list.level',
                             'contestant_list.ID_competition',
+                            'user.ID_user',
+                            'user_origin.country_id',
+                            'user_origin.country_name',
+                            'user_origin.state_name',
+                            'user_origin.city_name',
+                            'user_origin.indo_province_name',
+                            'user_origin.indo_city_name',
                             DB::raw('user.full_name as full_name'),
                             DB::raw('IF(user.nick_name IS NULL, SUBSTRING_INDEX(user.full_name, " ", 1), user.nick_name) as nick_name'),
                             DB::raw('FLOOR(DATEDIFF(CURRENT_DATE, user.dateofbirth) / 365) as age'),
                         )
                         ->get();
-                        // return dd($contestant);
         if($contestant->count() == 0) {
             return response()->json([
                 'status' => 'error',
@@ -677,6 +712,44 @@ class ApiController extends Controller
                 'data' => $contestant,
                 'code' => 200
             ], 200);
+        }
+    }
+
+    public function setAttendanceByCompetitionId(Request $request) {
+        try {
+            $successMessages = [];
+            $errorMessages = [];
+            foreach($request->ID_competitions as $ID_competition) {
+                $contestant = Contestant::where('ID_user', $request->ID_user)
+                                        ->leftJoin('competition_list', 'contestant_list.ID_competition', 'competition_list.ID_competition')
+                                        ->where('contestant_list.ID_competition', $ID_competition)
+                                        ->select('contestant_list.*', 'competition_list.level')
+                                        ->first();
+
+                if ($contestant->attendance == 0) {
+                    $contestant->attendance = 1;
+                    $contestant->save();
+                    $successMessages[] = '<i class="fa-solid fa-circle-check text-success me-2"></i> '. $contestant->level . ' <strong class="text-success">'.__('messages.response_successfully_checked_in').'</strong>!';
+                } else {
+                    $successMessages[] = '<i class="fa-solid fa-circle-info me-2"></i> '. $contestant->level . ' <strong class="text-secondary">'.__('messages.response_already_checked_in').'</strong>!';
+                }
+            }
+    
+            if (empty($successMessages)) {
+                throw new \Exception('No competitions successfully checked in');
+            }
+    
+            return response()->json([
+                'status' => 'success',
+                'messages' => $successMessages,
+                'code' => 200
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => empty($errorMessages) ? [$th->getMessage()] : $errorMessages,
+                'code' => 400
+            ], 400);
         }
     }
 

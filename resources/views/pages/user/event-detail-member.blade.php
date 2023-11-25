@@ -81,7 +81,7 @@
         @if ($isJudgeForThisEvent)
         <div class="col-12">
             <a href="/event/judge/{{ $event->ID_event }}" class="btn btn-danger mb-3">
-                <i class="fa-solid fa-calculator me-3"></i>Go To Judging Area
+                <i class="fa-solid fa-calculator me-3"></i>Judging Area
             </a>
         </div>
         @endif
