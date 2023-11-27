@@ -87,7 +87,7 @@ class UserUpdateRequest extends FormRequest
             "email" => $validated['email'],
             "dateofbirth" => $validated['dateofbirth'],
             "locale" => $validated['locale'],
-            "stance" => $this->stance == 'regular' ? 1 : 2,
+            "stance" => $this->stance != null ? ($this->stance == 'regular' ? 1 : 2) : null,
             "country_code" => $validated['country_code'],
             "phone" => $validated['phone'],
             "country_code_id" => $validated['country_code_id'],

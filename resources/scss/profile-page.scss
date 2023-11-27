@@ -246,6 +246,12 @@
     }
 }
 
+.tnc-container{
+    h1, h2, h4, p, ul, ol, li {
+        color: black;
+    }
+}
+
 @media screen and (min-width: 768px) and (max-width: 991px) {
     .jumbotron {
         padding: 0 !important;

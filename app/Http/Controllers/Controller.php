@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 use Auth;
 
+use App\Models\Notification;
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -25,6 +27,21 @@ class Controller extends BaseController
 
             view()->share('role', session('role'));
             view()->share('signed_in', $this->user);
+
+            // get notification
+            if ($this->user) {
+                $notifications = Notification::where('ID_user_receiver', $this->user->ID_user)
+                                                ->orWhere('ID_user_receiver', 'all')
+                                                ->orderBy('created_at', 'desc')
+                                                ->limit(5)
+                                                ->get();
+
+                $newNotificationsCount = Notification::where('ID_user_receiver', $this->user->ID_user)
+                                                ->where('read_at', null)
+                                                ->count();
+                view()->share('notifications', $notifications);
+                view()->share('newNotificationsCount', $newNotificationsCount);
+            }
             
 
             return $next($request);

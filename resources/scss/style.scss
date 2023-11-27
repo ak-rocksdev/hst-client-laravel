@@ -610,3 +610,54 @@ table.table.table-dark .group-header {
 #participant-table tbody tr {
     vertical-align: middle;
 }
+
+.notification{
+    &-count {
+        position: absolute;
+        top: -15px;
+        left: 10px;
+        background-color: var(--red) !important;
+        color: var(--white);
+        padding: 0.25rem 0.25rem;
+        border-radius: 5px !important;
+        font-size: 0.75rem !important;
+        display: flex;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    &-icon {
+        font-size: 1rem;
+        width: 4rem;
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    &-text-container {
+        line-height: 1;
+        margin-bottom: 0;
+        h5 {
+            font-size: 1rem;
+            margin-bottom: 2px;
+            &.new {
+                // create blue dot next to the text
+                &::after {
+                    content: '';
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    background-color: var(--bs-primary);
+                    border-radius: 50%;
+                    margin-left: 7px;
+                }
+            }
+        }
+        span {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+    }
+}

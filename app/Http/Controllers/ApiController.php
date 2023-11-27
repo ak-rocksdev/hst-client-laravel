@@ -14,6 +14,7 @@ use App\Models\UserOrigin;
 use App\Models\Participant;
 use App\Models\Judge;
 use App\Models\RunningList;
+use App\Models\Notification;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -475,7 +476,6 @@ class ApiController extends Controller
         ], 200);
     }
 
-    //create file image upload for user photo profile, and write the file name to the database
     public function uploadPhotoProfileByUserId(UserPhotoProfileUpdateRequest $request)
     {
         // Get the uploaded file
@@ -519,7 +519,7 @@ class ApiController extends Controller
         ]);
     }
 
-    // API to fill the participant table, after create the participant table on the database
+    // API to fill the participant table, after create the participant table on the database (Used for setup only)
     public function fillParticipantTable()
     {
         $users = User::all();
@@ -859,7 +859,7 @@ class ApiController extends Controller
         ], 200);
     }
 
-    public function calculateAverageScore($id_contestant, $id_games) { //NOTE - Perlu ditambah sistem penilaian 5 juri, highest and lowest score will be removed, then calculate the average score
+    public function calculateAverageScore($id_contestant, $id_games) { //NOTE - Baru pakai rumus average
         $id_competition = Games::where('ID_games', $id_games)->first()->ID_competition;
         $judgeCount = Judge::where('ID_competition', $id_competition)->count();
 
@@ -880,8 +880,33 @@ class ApiController extends Controller
             }
         }
 
+        // average formula
         $result = number_format($calculate / $judgeCount, 2);
 
+        // NOTE : Need another formula based on option selected on the competition_list table.
+        // highest and lowest score removed, then count the average the rest of the score
+
         return $result;
+    }
+
+    public function setShownNotificationAsRead(Request $request) {
+        $notifications = Notification::whereIn('id', $request->ID_notification)->get();
+        foreach($notifications as $notification) {
+            $notification->read_at = now();
+            $notification->save();
+        }
+
+        return;
+    }
+
+    public function countUnreadNotification() {
+        $user = auth()->user();
+        $unreadNotifications = $user->unreadNotifications->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $unreadNotifications,
+            'code' => 200
+        ], 200);
     }
 }

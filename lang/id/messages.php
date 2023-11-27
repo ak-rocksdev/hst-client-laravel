@@ -134,4 +134,9 @@ return [
     "response_already_checked_in" => "sudah check-in sebelumnya",
     "response_successfully_checked_in" => "berhasil check-in",
     "response_user_not_registered" => "User belum terdaftar!",
+    "notification_title_team_manager_application_sent" => "Permohonan Team Manager Terkirim",
+    "response_team_manager_application_created" => "Permohonan anda untuk menjadi Tim Manager telah dikirim! Kami akan meninjau pengajuan anda secepatnya",
+    "response_team_manager_application_exists" => "Anda sudah mengajukan permohonan, namun belum disetujui! Silakan tunggu respon dari Admin",
+    "response_you_must_be_agree_with_tnc" => "Anda harus menyetujui Syarat dan Ketentuan diatas untuk melanjutkan!",
+    "response_this_is_required" => "Wajib diisi!",
 ];

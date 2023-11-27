@@ -134,4 +134,9 @@ return [
     "response_already_checked_in" => "already checked-in previously",
     "response_successfully_checked_in" => "successfully checked-in",
     "response_user_not_registered" => "User is not registered!",
+    "notification_title_team_manager_application_sent" => "Team Manager Application Sent",
+    "response_team_manager_application_created" => "Your application has been sent! We will review your application as soon as possible",
+    "response_team_manager_application_exists" => "You already have a pending application! Please wait for the approval",
+    "response_you_must_be_agree_with_tnc" => "To register, You must be agree with our Terms and Conditions above!",
+    "response_this_is_required" => "This is required!",
 ];

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\TeamPageController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PermissionController;
 
@@ -23,6 +24,13 @@ use App\Http\Controllers\Auth\PermissionController;
 // });
 
 Route::middleware(['auth'])->group(function() {
+    // setShownNotificationAsRead
+    Route::prefix('/notification')->group(function () {
+        Route::get('/set-as-read',                  [ApiController::class, 'setShownNotificationAsRead']);
+        Route::get('/count-unread',                 [ApiController::class, 'countUnreadNotification']);
+        Route::get('/set-all-as-read',              [ApiController::class, 'setAllNotificationAsRead']); // NOTE: Belum
+        Route::get('/get',                          [ApiController::class, 'getAllNotificationByUserId']); // NOTE: Belum
+    });
     Route::prefix('/event')->group(function () {
         Route::get('/confirmation',                 [ApiController::class, 'doConfirmCompetitionOnRegister']);
         Route::post('/register',                    [ApiController::class, 'registerContestantByCompetitionId']);
@@ -37,6 +45,9 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/photo-profile/update',        [ApiController::class, 'uploadPhotoProfileByUserId']);
         Route::put('/update-password',              [ApiController::class, 'updatePasswordByUserId']);
     });
+    Route::prefix('/team')->group(function () {
+        Route::post('/apply',                        [TeamPageController::class, 'createTeamApplication']);
+    });
     Route::get('/fill-participant-table',           [ApiController::class, 'fillParticipantTable']);
     Route::prefix('/score')->group(function () {
         Route::get('/get',                          [ApiController::class, 'getContestantScoreByJudgeIdOnCurrentGames']);
@@ -44,7 +55,6 @@ Route::middleware(['auth'])->group(function() {
         Route::post('/verify',                      [ApiController::class, 'verifyScoreByContestantId']);
         Route::get('/calculate/{id_contestant}/{id_games}', [ApiController::class, 'calculateAverageScore']);
     });
-    // route prefix check-in
     Route::prefix('/check-in')->group(function () {
         Route::get('/confirmation',                 [ApiController::class, 'getContestantByUserIdAndIDevent']);
         Route::post('/set',                         [ApiController::class, 'setAttendanceByCompetitionId']);

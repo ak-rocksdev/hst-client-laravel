@@ -64,3 +64,4 @@
 </head>
 <body>
 	@include('layout.navbar')
+	@stack('scripts')

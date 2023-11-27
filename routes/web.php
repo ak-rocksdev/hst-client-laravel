@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\TeamPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,13 @@ Route::group(['middleware' => 'language'], function () {
             Route::get('/judge/scoring/{runningId}',   [PageController::class, 'viewJudgeScoringPage']);
             // check in
             Route::get('/check-in/{id}',        [PageController::class, 'viewCheckInPage']);
+        });
+
+        Route::prefix('/team')->group(function () {
+            Route::get('/manage',               [TeamPageController::class, 'viewTeamManagePage']);
+            Route::get('/detail/{id}',          [TeamPageController::class, 'viewTeamDetailPage']); // NOTE: Belum
+            Route::get('/edit/{id}',            [TeamPageController::class, 'viewTeamEditPage']); // NOTE: Belum
+            Route::get('/create',               [TeamPageController::class, 'viewTeamCreatePage']); // NOTE: Belum
         });
     });
 });

@@ -44,7 +44,7 @@ ALTER TABLE `user` MODIFY COLUMN phone varchar(20) CHARACTER SET utf8mb4 COLLATE
 -- TAMBAH COLUMN:
 -- max_join_competition
 ALTER TABLE `event_list` ADD max_join_competition tinyint(1) DEFAULT 1 NOT NULL AFTER registration_type;
-ALTER TABLE `event_list` ADD slug tinyint(1) DEFAULT 1 NOT NULL AFTER short_link; -- BELUM
+ALTER TABLE `event_list` ADD slug tinyint(1) DEFAULT 1 NOT NULL AFTER short_link; -- NOTE: Belum
 
 -- ===================================================================================================
 -- Table Judge_list
@@ -96,7 +96,67 @@ CREATE TABLE `participant` (
     FOREIGN KEY (`ID_competition`) REFERENCES `competition_list`(`ID_competition`)
 );
 
+-- ===================================================================================================
+-- Table user_manager (New)
 
+CREATE TABLE `user_manager` (
+    `id` INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ID_user_manager` INT(11) NOT NULL,
+    `ID_user_member` INT(11) NOT NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `updated_by` VARCHAR(36) NULL DEFAULT NULL,
+    FOREIGN KEY (`ID_user_manager`) REFERENCES `user`(`ID_user`),
+    FOREIGN KEY (`ID_user_member`) REFERENCES `user`(`ID_user`),
+    CHECK (`ID_user_manager` <> `ID_user_member`)
+);
+
+-- ===================================================================================================
+-- Table team_manager_application (New): contain is_agree_with_tnc, tnc_version, ID_user, person_in_charge_status, user_manage_status
+
+CREATE TABLE `team_manager_application` (
+    `id` INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ID_user` INT(11) NOT NULL,
+    `is_agree_with_tnc` TINYINT(1) NOT NULL DEFAULT 0,
+    `tnc_version` VARCHAR(10) NOT NULL,
+    `person_in_charge_status` VARCHAR(100) NOT NULL,
+    `user_manage_status` VARCHAR(100) NOT NULL,
+    `approval_status` TINYINT(1) NOT NULL DEFAULT 0,
+    `notes` TEXT NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `updated_by` VARCHAR(36) NULL DEFAULT NULL,
+    FOREIGN KEY (`ID_user`) REFERENCES `user`(`ID_user`)
+);
+
+
+-- ===================================================================================================
+-- Table notification (New)
+
+-- type of notification:
+-- 1: announcement
+-- 2: invitation
+-- 3: reminder
+
+-- icon of notification:
+-- 1: announcement: fa-bullhorn
+-- 2: invitation: fa-envelope
+-- 3: reminder: fa-bell
+
+CREATE TABLE `notification` (
+    `id` INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ID_user_receiver` VARCHAR(10) NOT NULL,
+    `type` TINYINT(1) NOT NULL DEFAULT 1,
+    `title` VARCHAR(100) NOT NULL,
+    `description` TEXT NOT NULL,
+    `read_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `created_by` VARCHAR(36) NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `updated_by` VARCHAR(36) NULL DEFAULT NULL
+);
 
 
 

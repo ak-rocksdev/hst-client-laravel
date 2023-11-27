@@ -59,12 +59,36 @@
         @if(Auth::guard('web')->check() == '1')
         <!-- Add <i class="fa-solid fa-bell"></i> -->
         <div class="dropdown d-block me-3">
-            <button class="btn-dropdown" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="btn-dropdown d-flex flex-row" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa-solid fa-bell"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-left slide-down" aria-labelledby="languageDropdown">
-                <li><a class="dropdown-item" href="#">Notif 1</a></li>
-                <li><a class="dropdown-item" href="#">Notif 2</a></li>
+                @if($newNotificationsCount > 0)
+                <span class="badge notification-count rounded-pill">{{ $newNotificationsCount }}</span>
+                @endif
+            </div>
+            <ul class="dropdown-menu dropdown-menu-left slide-down notification-container" aria-labelledby="notificationDropdown">
+                @foreach($notifications as $notification)
+                <li data-id="{{ $notification->id }}" class="{{ $notification->read_at == null ? 'new' : '' }}">
+                    <a class="dropdown-item mb-1 py-2" href="#">
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="p-2 rounded-circle bg-success-subtle notification-icon me-2">
+                                <i class="fa-solid fa-newspaper fa-lg"></i>
+                            </div>
+                            <div class="d-flex flex-column notification-text-container">
+                                <h5 class="fw-bold {{ $notification->read_at == null ? 'new' : '' }}">{{ $notification->title }}</h5>
+                                <span>{{ $notification->description }}</span>
+                                <!-- count how many hours ago based on created_at -->
+                                <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                @endforeach
+                <!-- "See all notification" text, centered and bold -->
+                <li>
+                    <a class="dropdown-item text-center fw-bold" href="#">
+                        See All Notifications
+                    </a>
+                </li>
             </ul>
         </div>
         <li class="nav-item dropdown d-block">
@@ -94,3 +118,44 @@
         @endif
     </div>
 </nav>
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#notificationDropdown').on('click', function() {
+            let newNotificationCount = $('.notification-container li.new').length;
+            if (newNotificationCount > 0) {
+                console.log(newNotificationCount)
+                var notificationIds = [];
+                $('.notification-container li.new').each(function() {
+                    let notificationId = $(this).data('id');
+                    let thisHasNewClass = $(this).hasClass('new');
+                    
+                    if(thisHasNewClass) {
+                        if(notificationId) {
+                            notificationIds.push(notificationId);
+                        }
+                    }
+                });
+                action = '/api/notification/set-as-read';
+                method = 'GET';
+                form = {
+                    ID_notification: notificationIds
+                };
+                successCallback = function(response) {
+                    countUnreadNotification();
+                    setTimeout(function() {
+                        $('.notification-text-container h5').removeClass('new');
+                        $('.notification-container li').removeClass('new');
+                    }, 1000);
+                };
+                errorCallback = function(response) {
+                };
+                console.log(form);
+                api(action, method, form, successCallback, errorCallback)
+            }
+        });
+    });
+</script>
+@endpush

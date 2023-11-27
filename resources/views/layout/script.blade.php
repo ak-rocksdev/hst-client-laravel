@@ -113,4 +113,26 @@
         loadingContainers.classList.remove("loadingShow");
     }
 
+    function countUnreadNotification() {
+        let action = '/api/notification/count-unread';
+        let method = 'GET';
+        let form = {};
+        let successCallback = function(response) {
+            let notificationCount = response.data;
+            // after 1 second set notification count to class .badge.notification-count
+            // if notificationCount is 0, hide the notification count
+            setTimeout(function() {
+                if (notificationCount == 0) {
+                    $('.badge.notification-count').addClass('d-none');
+                } else {
+                    $('.badge.notification-count').removeClass('d-none');
+                }
+                $('.badge.notification-count').text(notificationCount);
+            }, 1000);
+        };
+        let errorCallback = function(response) {
+        };
+        api(action, method, form, successCallback, errorCallback)
+    }
+
 </script>

@@ -22,6 +22,12 @@ class User extends Authenticatable
         });
     }
 
+    // get unread notification where read_at is null and where ID_user is the current user and 'all'
+    public function unreadNotifications()
+    {
+        return $this->hasMany(Notification::class, 'ID_user_receiver')->where('read_at', null)->where('ID_user_receiver', $this->ID_user)->orWhere('ID_user_receiver', 'all');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
