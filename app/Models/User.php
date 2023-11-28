@@ -28,6 +28,26 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class, 'ID_user_receiver')->where('read_at', null)->where('ID_user_receiver', $this->ID_user)->orWhere('ID_user_receiver', 'all');
     }
 
+    public function teamManagerApplications()
+    {
+        return $this->hasMany(TeamManagerApplication::class, 'ID_user');
+    }
+
+    public function unapprovedTeamManagerApplications()
+    {
+        return $this->hasMany(TeamManagerApplication::class, 'ID_user')->where('approval_status', 2);
+    }
+
+    public function unrespondedTeamManagerApplications()
+    {
+        return $this->hasOne(TeamManagerApplication::class, 'ID_user')->where('approval_status', 0);
+    }
+
+    public function approvedTeamManagerApplications()
+    {
+        return $this->hasOne(TeamManagerApplication::class, 'ID_user')->where('approval_status', 1);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

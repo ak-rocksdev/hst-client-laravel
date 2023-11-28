@@ -46,7 +46,9 @@ Route::middleware(['auth'])->group(function() {
         Route::put('/update-password',              [ApiController::class, 'updatePasswordByUserId']);
     });
     Route::prefix('/team')->group(function () {
-        Route::post('/apply',                        [TeamPageController::class, 'createTeamApplication']);
+        Route::post('/apply',                       [TeamPageController::class, 'createTeamApplication']);
+        Route::get('/search-user',                  [TeamPageController::class, 'searchUser']);
+        Route::post('/set-member',                   [TeamPageController::class, 'setMemberByUserId']);
     });
     Route::get('/fill-participant-table',           [ApiController::class, 'fillParticipantTable']);
     Route::prefix('/score')->group(function () {

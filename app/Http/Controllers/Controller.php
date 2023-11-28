@@ -30,9 +30,14 @@ class Controller extends BaseController
 
             // get notification
             if ($this->user) {
+                // notification that less than 3 months ago
                 $notifications = Notification::where('ID_user_receiver', $this->user->ID_user)
                                                 ->orWhere('ID_user_receiver', 'all')
                                                 ->orderBy('created_at', 'desc')
+                                                ->where(function($query) {
+                                                    $query->where('created_at', '>=', now()->subMonths(3))
+                                                    ->orWhere('read_at', null);
+                                                })
                                                 ->limit(5)
                                                 ->get();
 

@@ -883,7 +883,7 @@ class ApiController extends Controller
         // average formula
         $result = number_format($calculate / $judgeCount, 2);
 
-        // NOTE : Need another formula based on option selected on the competition_list table.
+        // NOTE: Need another formula based on option selected on the competition_list table.
         // highest and lowest score removed, then count the average the rest of the score
 
         return $result;

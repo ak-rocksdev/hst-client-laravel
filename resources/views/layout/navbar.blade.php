@@ -65,7 +65,17 @@
                 <span class="badge notification-count rounded-pill">{{ $newNotificationsCount }}</span>
                 @endif
             </div>
-            <ul class="dropdown-menu dropdown-menu-left slide-down notification-container" aria-labelledby="notificationDropdown">
+            <ul class="dropdown-menu dropdown-menu-left p-0 slide-down notification-container" aria-labelledby="notificationDropdown">
+                <!-- When there is No Notification, Show Text -->
+                @if($notifications == null || $notifications->count() == 0)
+                <li>
+                    <span class="notification-empty dropdown-item">
+                        <!-- Bell Icon Big -->
+                        <i class="fa-solid fa-bell fa-3x text-secondary-subtle"></i>
+                        No New Notification
+                    </span>
+                </li>
+                @else
                 @foreach($notifications as $notification)
                 <li data-id="{{ $notification->id }}" class="{{ $notification->read_at == null ? 'new' : '' }}">
                     <a class="dropdown-item mb-1 py-2" href="#">
@@ -83,9 +93,10 @@
                     </a>
                 </li>
                 @endforeach
+                @endif
                 <!-- "See all notification" text, centered and bold -->
                 <li>
-                    <a class="dropdown-item text-center fw-bold" href="#">
+                    <a class="dropdown-item py-2 text-center fw-bold" href="#">
                         See All Notifications
                     </a>
                 </li>

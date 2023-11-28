@@ -105,6 +105,7 @@ return [
     "question_submit_score" => "Are you sure you want to submit this score?",
     "question_verify_score" => "Are you sure you want to verify this score?",
     "select_category_check_in" => "Select Category to Check-In",
+    "no_user_on_team" => "You don't have any team member yet,<br />please add your team member!",
 
     // response
     "response_password_updated" => "Your Password has been updated! Please login with your new password.",

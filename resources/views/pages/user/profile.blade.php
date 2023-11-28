@@ -130,14 +130,24 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-end">
-                <span class="btn btn-sm btn-dark me-2" data-bs-toggle="modal" data-bs-target="#teamManagerApplicationModal" style="font-size: 1rem;">
+                <!-- If application is available -->
+                @if (!$user->approvedTeamManagerApplications)
+                <button type="button" class="btn btn-sm btn-dark me-2" 
+                    {!! !$user->unrespondedTeamManagerApplications ? 'data-bs-toggle="modal" data-bs-target="#teamManagerApplicationModal"' : '' !!}
+                    style="font-size: 1rem;" 
+                    {!! $user->unrespondedTeamManagerApplications ? 'disabled' : '' !!}
+                    >
                     <i class="fas fa-user-tie me-2"></i>
                     <span>Apply for Team Manager</span>
-                </span>
+                </button>
+                @endif
+
+                @if ($user->approvedTeamManagerApplications)
                 <a href="/team/manage" class="btn btn-sm btn-dark me-2" style="font-size: 1rem;">
                     <i class="fas fa-users me-2"></i>
                     <span>Manage My Team</span>
                 </a>
+                @endif
                 <a href="/profile/edit" class="btn btn-sm btn-dark" style="font-size: 1rem;">
                     <i class="fas fa-user-edit me-2"></i>
                     <span>Edit Profile</span>
@@ -564,7 +574,7 @@
                 }
             });
         }
-        api(action, method, form, successCallback, errorCallback)
+        api(action, method, form, successCallback, errorCallback);
     }
 
     function updateCharacterCount() {

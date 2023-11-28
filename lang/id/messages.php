@@ -105,6 +105,7 @@ return [
     "question_submit_score" => "Apakah anda yakin untuk submit skor ini?",
     "question_verify_score" => "Apakah anda yakin ingin memverifikasi skor ini?",
     "select_category_check_in" => "Pilih Kategori untuk Check-In",
+    "no_user_on_team" => "Anda belum memiliki anggota tim,<br />silakan tambahkan anggota tim!",
 
     // response
     "response_password_updated" => "Password Anda telah diperbarui! Silakan masuk dengan password baru Anda.",
